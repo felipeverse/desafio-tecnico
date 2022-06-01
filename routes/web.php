@@ -21,9 +21,4 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\ContatoController::class, 'index'])->name('home');
-Route::get('contato/create', [App\Http\Controllers\ContatoController::class, 'create']);
-Route::post('contato', [App\Http\Controllers\ContatoController::class, 'store']);
-Route::get('contato/{contato}/edit', [App\Http\Controllers\ContatoController::class, 'edit']);
-Route::get('contato/{contato}', [App\Http\Controllers\ContatoController::class, 'show']);
-Route::put('contato/{contato}', [App\Http\Controllers\ContatoController::class, 'update']);
-Route::delete('contato/{contato}', [App\Http\Controllers\ContatoController::class, 'destroy']);
+Route::resource('contatos', ContatoController::class);
