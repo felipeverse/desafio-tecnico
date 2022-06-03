@@ -14,14 +14,48 @@
                             </div>
                         @endif
 
-                        <h2>{{ $contato->nome }}</h2>
-                        <p>{{ $contato->email }}</p>
-                        <p>{{ $contato->telefone }}</p>
-                        <p>{{ $contato->cep }}</p>
-                        <p>{{ $contato->logradouro }}</p>
-                        <p>{{ $contato->bairro }}</p>
-                        <p>{{ $contato->localidade }}</p>
-                        <p>{{ $contato->uf }}</p>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Nome:</th>
+                                    <td>{{ $contato->nome }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ $contato->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Telefone:</th>
+                                    <td>
+                                        <ul>
+                                            @foreach ($contato->telefones as $telefone)
+                                                <li>{{ $telefone->numero }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>CEP:</th>
+                                    <td>{{ $contato->cep }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Logradouro:</th>
+                                    <td>{{ $contato->logradouro }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Bairro:</th>
+                                    <td>{{ $contato->bairro }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Localidade:</th>
+                                    <td>{{ $contato->localidade }}</td>
+                                </tr>
+                                <tr>
+                                    <th>UF:</th>
+                                    <td>{{ $contato->uf }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

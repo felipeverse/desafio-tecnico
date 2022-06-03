@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Contato;
+use App\Models\ContatoTelefone;
 
 class ContatoController extends Controller
 {
@@ -23,7 +24,6 @@ class ContatoController extends Controller
         $request->validate([
             'nome' => 'required',
             'email' => 'required',
-            'telefone' => 'required',
             'cep' => 'required',
             'logradouro' => 'required',
             'bairro' => 'required',
@@ -33,14 +33,20 @@ class ContatoController extends Controller
         $contato = new Contato();
         $contato->nome = $request->nome;
         $contato->email = $request->email;
-        $contato->telefone = $request->telefone;
         $contato->cep = $request->cep;
         $contato->logradouro = $request->logradouro;
         $contato->bairro = $request->bairro;
         $contato->localidade = $request->localidade;
         $contato->uf = $request->uf;
-
         $contato->save();
+
+        foreach ($request->telefones as $key => $telefone) {
+            $contato->telefones()->create([
+                'contato_id' => $contato->id,
+                'numero' => $telefone
+            ]);
+        }
+
         return redirect('/contatos')->with('success', 'Contato criado com sucesso!');
     }
 
@@ -59,7 +65,6 @@ class ContatoController extends Controller
         $request->validate([
             'nome' => 'required',
             'email' => 'required',
-            'telefone' => 'required',
             'cep' => 'required',
             'logradouro' => 'required',
             'bairro' => 'required',
@@ -68,14 +73,22 @@ class ContatoController extends Controller
         ]);
         $contato->nome = $request->nome;
         $contato->email = $request->email;
-        $contato->telefone = $request->telefone;
         $contato->cep = $request->cep;
         $contato->logradouro = $request->logradouro;
         $contato->bairro = $request->bairro;
         $contato->localidade = $request->localidade;
         $contato->uf = $request->uf;
-
         $contato->save();
+
+        ContatoTelefone::where('contato_id', $contato->id)->delete();
+
+        foreach ($request->telefones as $key => $telefone) {
+            $contato->telefones()->create([
+                'contato_id' => $contato->id,
+                'numero' => $telefone
+            ]);
+        }
+
         return redirect('/contatos')->with('success', 'Contato atualizado com sucesso!');
     }
 

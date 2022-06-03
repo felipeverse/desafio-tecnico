@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contato extends Model
+class ContatoTelefone extends Model
 {
     use HasFactory;
 
-    public function telefones() {
-        return $this->hasMany(ContatoTelefone::class);
+    protected $fillable = ['numero'];
+
+    public function contato() {
+        return $this->belongsTo(Contato::class);
     }
 }

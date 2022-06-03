@@ -28,7 +28,13 @@
                                 <td>{{ $contato->id }}</td>
                                 <td>{{ $contato->nome }}</td>
                                 <td>{{ $contato->email }}</td>
-                                <td>{{ $contato->telefone }}</td>
+                                <td>
+                                    <ul>
+                                        @foreach ($contato->telefones as $telefone)
+                                            <li>{{ $telefone->numero }}</li>
+                                        @endforeach
+                                    </ul>
+                                </td>
                                 <td>{{ $contato->cep }}</td>
                                 <td>
                                     <a href="contatos/{{ $contato->id }}" class="btn btn-primary">Show</a>
