@@ -5,6 +5,8 @@
 
 {{-- máscaras personalizadas --}}
 <script src="/js/masks.js"></script>
+<script src="/js/contatos/cep.js"></script>
+<script src="/js/contatos/endereco.js"></script>
 
 @section('content')
 <div class="container">
@@ -40,41 +42,82 @@
                                     <div><a class="btn btn-primary addTelefoneRow">+</a></div>
                                 </div>
                             </div>
+                            {{-- Telefones --}}
                             <div class="card-body">
                                 <table class="table table-sm mb-0 telefone-table">
                                     @foreach ($contato->telefones as $telefone)                          
                                         <tr class="row">
                                             <td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000" value="{{ $telefone->numero }}"></td>
-                                            <td class="col-auto"><a class="btn btn-danger remove"> - </a></td>
+                                            <td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </a></td>
                                         </tr>
                                     @endforeach
                                 </table>
                             </div>
-                        </div> 
+                            {{-- Endereços --}}
+                            <div class="card my-2">
+                                <div class="card-header p-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">Endereços</div>
+                                        <div class=""><a class="btn btn-primary addEnderecoCard">+</a></div>
+                                    </div>
+                                </div>
+                                <div class="card-body enderecos-main-card">
 
-                        <div class="form-group">
-                            <label for="">CEP</label>
-                            <input type="number" name="cep" class="form-control" value="{{ $contato->cep }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Logradouro</label>
-                            <input type="text" name="logradouro" class="form-control" value="{{ $contato->logradouro }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Bairro</label>
-                            <input type="text" name="bairro" class="form-control" value="{{ $contato->bairro }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Localidade</label>
-                            <input type="text" name="localidade" class="form-control" value="{{ $contato->localidade }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">UF</label>
-                            <input type="text" name="uf" class="form-control" value="{{ $contato->uf }}">
+                                    @foreach ($contato->enderecos as $endereco)
+                                        {{-- Card Endereço --}}
+                                        <div class="card enderecoCard my-2">
+                                            <div class="card-header p-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1">{{ $endereco->titulo }}</div>
+                                                    <div class=""><a class="btn btn-danger removeEnderecoCard">-</a></div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <table class="table table-sm mb-0">
+                                                    <tr class="row">
+                                                        <td class="col">
+                                                            Título
+                                                            <input type="text" name="titulos[]" class="form-control titulo" value="{{ $endereco->titulo }}">
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="row">
+                                                        <td class="col">
+                                                            CEP
+                                                            <input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678" value="{{ $endereco->cep }}">
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="row logradouro">
+                                                        <td class="col">
+                                                            Logradouro
+                                                            <input type="text" name="logradouros[]" class="form-control logradouro" value="{{ $endereco->logradouro }}">
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="row">
+                                                        <td class="col">
+                                                            Bairro
+                                                            <input type="text" name="bairros[]" class="form-control" value="{{ $endereco->bairro }}">
+                                                        </td>
+                                                        <td class="col">
+                                                            Número
+                                                            <input type="text" name="numeros[]" class="form-control" value="{{ $endereco->numero }}">
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="row">
+                                                        <td class="col">
+                                                            Localidade
+                                                            <input type="text" name="localidades[]" class="form-control" value="{{ $endereco->localidade }}">
+                                                        </td>
+                                                        <td class="col">
+                                                            UF
+                                                            <input type="text" name="ufs[]" class="form-control" value="{{ $endereco->uf }}">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -105,7 +148,7 @@
             $('.telefone-table').append(addRow);
         };
     
-        $('.remove').live('click', function () {
+        $('.removeTelefoneRow').live('click', function () {
             var l = $('.telefone-table tr').length;
             if(l==1){
                 alert('O contato deve ter ao menos um telefone.')
@@ -114,6 +157,86 @@
             }
         
         });
+
+        // Endereços Scripts
+
+        enableCEPSearch();
+        atualizaTituloEndereco();
+        
+        $('.addEnderecoCard').on('click', function () {
+            addCardRow();
+            enableMasks();
+            enableCEPSearch();
+            atualizaTituloEndereco();
+        });
+        
+        // Adiciona novo card de para preenchimento de endereço
+        function addCardRow() {
+            var enderecoCard = '{{-- Card Endereço --}}\n' +
+                                    '<div class="card enderecoCard my-2">\n' +
+                                        '<div class="card-header p-2">\n' +
+                                        '<div class="d-flex align-items-center">\n' +
+                                                '<div class="flex-grow-1">Endereço ' + (quantidadeEnderecos() +1) + '</div>\n' +
+                                                '<div class=""><a class="btn btn-danger removeEnderecoCard">-</a></div>\n' +
+                                            '</div>\n' +
+                                        '</div>\n' +
+                                        '<div class="card-body">\n' +
+                                            '<table class="table table-sm mb-0">\n' +
+                                                '<tr class="row">\n' +
+                                                    '<td class="col">\n' +
+                                                        'Título\n' +
+                                                        '<input type="text" name="titulos[]" class="form-control titulo" value="Endereço ' + (quantidadeEnderecos() +1) + '">\n' +
+                                                    '</td>\n' +
+                                                '</tr>\n' +
+                                                '<tr class="row">\n' +
+                                                    '<td class="col">\n' +
+                                                        'CEP\n' +
+                                                        '<input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678">\n' +
+                                                    '</td>\n' +
+                                                '</tr>\n' +
+                                                '<tr class="row">\n' +
+                                                    '<td class="col">\n' +
+                                                        'Logradouro\n' +
+                                                        '<input type="text" name="logradouros[]" class="form-control">\n' +
+                                                    '</td>\n' +
+                                                '</tr>\n' +
+                                                '<tr class="row">\n' +
+                                                    '<td class="col">\n' +
+                                                        'Bairro\n' +
+                                                        '<input type="text" name="bairros[]" class="form-control">\n' +
+                                                    '</td>\n' +
+                                                    '<td class="col">\n' +
+                                                        'Número\n' +
+                                                        '<input type="text" name="numeros[]" class="form-control">\n' +
+                                                    '</td>\n' +
+                                                '</tr>\n' +
+                                                '<tr class="row">\n' +
+                                                    '<td class="col">\n' +
+                                                        'Localidade\n' +
+                                                        '<input type="text" name="localidades[]" class="form-control">\n' +
+                                                    '</td>\n' +
+                                                    '<td class="col">\n' +
+                                                        'UF\n' +
+                                                        '<input type="text" name="ufs[]" class="form-control">\n' +
+                                                    '</td>\n' +
+                                                '</tr>\n' +
+                                            '</table>\n' +
+                                        '</div>\n' +
+                                    '</div>';
+            $('.enderecos-main-card').append(enderecoCard);
+        };
+    
+        // Remove card de endereço
+        $('.removeEnderecoCard').live('click', function () {
+            var l = $('.enderecoCard').length;
+            if(l==1){
+                alert('O contato deve ter ao menos um endereço.')
+            }else{
+                $(this).parent().parent().parent().parent().remove();
+            }
+        
+        });
+
     });
 
 </script>

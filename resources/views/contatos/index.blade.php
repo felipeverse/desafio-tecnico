@@ -18,7 +18,6 @@
                             <th>Nome</th>
                             <th>Email</th>
                             <th>Telefone</th>
-                            <th>CEP</th>
                             <th colspan="2">Action</th>
                         </tr>
                     </thead>
@@ -35,7 +34,6 @@
                                         @endforeach
                                     </ul>
                                 </td>
-                                <td>{{ $contato->cep }}</td>
                                 <td>
                                     <a href="contatos/{{ $contato->id }}" class="btn btn-primary">Show</a>
                                     <a href="contatos/{{ $contato->id }}/edit" class="btn btn-primary">Edit</a>

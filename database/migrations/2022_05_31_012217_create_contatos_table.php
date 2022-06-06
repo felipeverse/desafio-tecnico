@@ -17,11 +17,6 @@ class CreateContatosTable extends Migration
             $table->id();
             $table->string('nome');
             $table->string('email');
-            $table->string('cep');
-            $table->string('logradouro');
-            $table->string('bairro');
-            $table->string('localidade');
-            $table->string('uf');
             $table->timestamps();
         });
     }

@@ -25,7 +25,7 @@
                                     <td>{{ $contato->email }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Telefone:</th>
+                                    <th>Telefones:</th>
                                     <td>
                                         <ul>
                                             @foreach ($contato->telefones as $telefone)
@@ -35,24 +35,23 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>CEP:</th>
-                                    <td>{{ $contato->cep }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Logradouro:</th>
-                                    <td>{{ $contato->logradouro }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Bairro:</th>
-                                    <td>{{ $contato->bairro }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Localidade:</th>
-                                    <td>{{ $contato->localidade }}</td>
-                                </tr>
-                                <tr>
-                                    <th>UF:</th>
-                                    <td>{{ $contato->uf }}</td>
+                                    <th style="border-bottom: none !important;">Endereços:</th>
+                                    <table>
+                                        <tr>
+                                            @foreach ($contato->enderecos as $endereco)
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">{{ $endereco->titulo }}</h5>
+                                                        <p><strong>CEP: {{ $endereco->cep }}</strong></p>
+                                                        <p><strong>Logradouro: {{ $endereco->logradouro }}</strong></p>
+                                                        <p><strong>Bairro: {{ $endereco->bairro }}</strong></p>
+                                                        <p><strong>Localidade: {{ $endereco->localidade }}</strong></p>
+                                                        <p><strong>UF: {{ $endereco->uf }}</strong></p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </tr>
+                                    </table>
                                 </tr>
                             </tbody>
                         </table>

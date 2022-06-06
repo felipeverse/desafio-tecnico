@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Contato;
+use App\Models\ContatoEndereco;
 use App\Models\ContatoTelefone;
 
 class ContatoController extends Controller
@@ -23,27 +24,30 @@ class ContatoController extends Controller
     {
         $request->validate([
             'nome' => 'required',
-            'email' => 'required',
-            'cep' => 'required',
-            'logradouro' => 'required',
-            'bairro' => 'required',
-            'localidade' => 'required',
-            'uf' => 'required'
+            'email' => 'required'
         ]);
         $contato = new Contato();
         $contato->nome = $request->nome;
         $contato->email = $request->email;
-        $contato->cep = $request->cep;
-        $contato->logradouro = $request->logradouro;
-        $contato->bairro = $request->bairro;
-        $contato->localidade = $request->localidade;
-        $contato->uf = $request->uf;
         $contato->save();
 
         foreach ($request->telefones as $key => $telefone) {
             $contato->telefones()->create([
                 'contato_id' => $contato->id,
                 'numero' => $telefone
+            ]);
+        }
+        
+        foreach ($request->ceps as $key => $cep) {
+            $contato->enderecos()->create([
+                'contato_id' => $contato->id,
+                'cep' => $cep,
+                'titulo' => $request->titulos[$key],
+                'logradouro' => $request->logradouros[$key],
+                'bairro' => $request->bairros[$key],
+                'numero' => $request->numeros[$key],
+                'localidade' => $request->localidades[$key],
+                'uf' => $request->ufs[$key],
             ]);
         }
 
@@ -64,20 +68,10 @@ class ContatoController extends Controller
     {
         $request->validate([
             'nome' => 'required',
-            'email' => 'required',
-            'cep' => 'required',
-            'logradouro' => 'required',
-            'bairro' => 'required',
-            'localidade' => 'required',
-            'uf' => 'required'
+            'email' => 'required'
         ]);
         $contato->nome = $request->nome;
         $contato->email = $request->email;
-        $contato->cep = $request->cep;
-        $contato->logradouro = $request->logradouro;
-        $contato->bairro = $request->bairro;
-        $contato->localidade = $request->localidade;
-        $contato->uf = $request->uf;
         $contato->save();
 
         ContatoTelefone::where('contato_id', $contato->id)->delete();
@@ -86,6 +80,21 @@ class ContatoController extends Controller
             $contato->telefones()->create([
                 'contato_id' => $contato->id,
                 'numero' => $telefone
+            ]);
+        }
+
+        ContatoEndereco::where('contato_id', $contato->id)->delete();
+
+        foreach ($request->ceps as $key => $cep) {
+            $contato->enderecos()->create([
+                'contato_id' => $contato->id,
+                'cep' => $cep,
+                'titulo' => $request->titulos[$key],
+                'logradouro' => $request->logradouros[$key],
+                'bairro' => $request->bairros[$key],
+                'numero' => $request->numeros[$key],
+                'localidade' => $request->localidades[$key],
+                'uf' => $request->ufs[$key],
             ]);
         }
 

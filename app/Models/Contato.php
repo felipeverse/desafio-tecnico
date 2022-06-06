@@ -12,4 +12,8 @@ class Contato extends Model
     public function telefones() {
         return $this->hasMany(ContatoTelefone::class);
     }
+
+    public function enderecos() {
+        return $this->hasMany(ContatoEndereco::class);
+    }
 }
