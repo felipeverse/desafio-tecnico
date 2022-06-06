@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContatoController;
+use App\Http\Controllers\BuscaCEPController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ use App\Http\Controllers\ContatoController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('cep/{cep}', [BuscaCEPController::class, 'fetch']);
 
 Auth::routes();
 
