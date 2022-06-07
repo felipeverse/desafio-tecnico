@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+
 @section('content')
     <div class="container">
         @if (session('success'))
@@ -19,8 +20,8 @@
                 <table class="table table-bordered table-striped align-middle">
                     <thead>
                         <tr class="">
-                            <th>Id</th>
-                            <th>Nome</th>
+                            <th>@sortablelink('id')</th>
+                            <th>@sortablelink('nome')</th>
                             <th>Email</th>
                             <th>Telefone</th>
                             <th>Ações</th>
@@ -58,7 +59,7 @@
                     </tbody>
                 </table>
             </div>
-            {!! $contatos->links() !!}
+            {!! $contatos->appends(Request::except('page'))->render() !!}
         </div>
     </div>
 @endsection

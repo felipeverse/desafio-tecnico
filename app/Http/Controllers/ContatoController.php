@@ -12,7 +12,7 @@ class ContatoController extends Controller
 {
     public function index()
     {
-        $contatos = Contato::paginate(10);
+        $contatos = Contato::sortable()->paginate(5);
         return view('contatos.index', compact('contatos'));
     }
 
