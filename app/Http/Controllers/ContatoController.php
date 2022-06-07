@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Contato;
 use App\Models\ContatoEndereco;
 use App\Models\ContatoTelefone;
+use App\Jobs\ContatoEmailJob;
 
 class ContatoController extends Controller
 {
@@ -50,6 +51,10 @@ class ContatoController extends Controller
                 'uf' => $request->ufs[$key],
             ]);
         }
+
+        $details['contato'] = $contato;
+        $details['email']   = 'felipealvesrrodrigues@outlook.com';
+        dispatch(new ContatoEmailJob($details));
 
         return redirect('/contatos')->with('success', 'Contato criado com sucesso!');
     }
