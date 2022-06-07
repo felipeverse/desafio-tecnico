@@ -10,9 +10,19 @@ use App\Jobs\ContatoEmailJob;
 
 class ContatoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $contatos = Contato::sortable()->paginate(5);
+        $filter = $request->query('filter');
+
+        if (!empty($filter)) {
+            $contatos = Contato::sortable()
+                ->where('contatos.nome', 'like', '%'.$filter.'%')
+                ->paginate(5);
+        } else {
+            $contatos = Contato::sortable()
+                ->paginate(5);
+        }
+
         return view('contatos.index', compact('contatos'));
     }
 

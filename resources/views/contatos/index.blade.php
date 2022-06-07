@@ -15,6 +15,17 @@
                     <i class="bi bi-plus"></i>
                     Novo contato
                 </a>
+
+                <div>
+                    <form class="" method="GET">
+                        <div class="form-group mb-2">
+                            <div class="d-flex">
+                                <input type="text" class="form-control me-2" id="filter" name="filter" placeholder="Nome do contato..." value="">
+                                <button class="btn btn-success" type="submit" class="btn btn-default mb-2">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 
                 <br>
                 <table class="table table-bordered table-striped align-middle">
@@ -60,6 +71,10 @@
                 </table>
             </div>
             {!! $contatos->appends(Request::except('page'))->render() !!}
+
+            <p>
+                Mostrando {{$contatos->count()}} of {{ $contatos->total() }} contato(s).
+            </p>
         </div>
     </div>
 @endsection
