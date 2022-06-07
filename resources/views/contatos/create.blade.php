@@ -11,11 +11,22 @@
 <script src="/js/contatos/endereco.js"></script>
 
 @section('content')
-@if(Session::has('error'))
-<div class="alert alert-danger">
-  {{ Session::get('error')}}
-</div>
-@endif
+    @if(Session::has('error'))
+        <div class="alert alert-danger">
+            {{ Session::get('error')}}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -45,6 +56,11 @@
                             <div class="form-group my-2">
                                 <label for="">Email</label>
                                 <input type="email" name="email" class="form-control">
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
 
                             {{-- Telefones --}}
@@ -59,6 +75,11 @@
                                     <table class="table table-sm mb-0 telefone-table">
                                         <tr class="row">
                                             <td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000"></td>
+                                            @error('telefones')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                             <td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </a></td>
                                         </tr>
                                     </table>
@@ -93,12 +114,22 @@
                                                     <td class="col">
                                                         Título
                                                         <input type="text" name="titulos[]" class="form-control titulo" value="Endereço 01">
+                                                        @error('titulos')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </td>
                                                 </tr>
                                                 <tr class="row">
                                                     <td class="col">
                                                         CEP
                                                         <input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678">
+                                                        @error('ceps')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </td>
                                                 </tr>
                                                 <tr class="row logradouro">
@@ -106,25 +137,50 @@
                                                         Logradouro
                                                         <input type="text" name="logradouros[]" class="form-control logradouro" readonly>
                                                     </td>
+                                                    @error('logradouros')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
                                                 </tr>
                                                 <tr class="row">
                                                     <td class="col">
                                                         Bairro
                                                         <input type="text" name="bairros[]" class="form-control" readonly>
+                                                        @error('bairros')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </td>
                                                     <td class="col">
                                                         Número
                                                         <input type="text" name="numeros[]" class="form-control">
+                                                        @error('numeros')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </td>
                                                 </tr>
                                                 <tr class="row">
                                                     <td class="col">
                                                         Localidade
                                                         <input type="text" name="localidades[]" class="form-control" readonly>
+                                                        @error('localidades')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </td>
                                                     <td class="col">
                                                         UF
                                                         <input type="text" name="ufs[]" class="form-control" readonly>
+                                                        @error('ufs')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </td>
                                                 </tr>
                                             </table>
