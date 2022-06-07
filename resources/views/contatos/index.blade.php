@@ -27,6 +27,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if ($contatos->count() == 0)
+                            <tr>
+                                <td colspan="5">Nenhum contato cadastrado.</td>
+                            </tr>
+                        @endif
                         @foreach ($contatos as $contato)
                             <tr>
                                 <td>{{ $contato->id }}</td>
@@ -53,6 +58,7 @@
                     </tbody>
                 </table>
             </div>
+            {!! $contatos->links() !!}
         </div>
     </div>
 @endsection
