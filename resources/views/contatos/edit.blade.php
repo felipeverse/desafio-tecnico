@@ -1,4 +1,5 @@
-@extends('layouts.app');
+@extends('layouts.app')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
@@ -53,70 +54,70 @@
                                     @endforeach
                                 </table>
                             </div>
-                            {{-- Endereços --}}
-                            <div class="card my-2">
-                                <div class="card-header p-2">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1">Endereços</div>
-                                        <div class=""><a class="btn btn-primary addEnderecoCard">+</a></div>
-                                    </div>
+                        </div>
+                        {{-- Endereços --}}
+                        <div class="card my-2">
+                            <div class="card-header p-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1">Endereços</div>
+                                    <div class=""><a class="btn btn-primary addEnderecoCard">+</a></div>
                                 </div>
-                                <div class="card-body enderecos-main-card">
+                            </div>
+                            <div class="card-body enderecos-main-card">
 
-                                    @foreach ($contato->enderecos as $endereco)
-                                        {{-- Card Endereço --}}
-                                        <div class="card enderecoCard my-2">
-                                            <div class="card-header p-2">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="flex-grow-1">{{ $endereco->titulo }}</div>
-                                                    <div class=""><a class="btn btn-danger removeEnderecoCard">-</a></div>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <table class="table table-sm mb-0">
-                                                    <tr class="row">
-                                                        <td class="col">
-                                                            Título
-                                                            <input type="text" name="titulos[]" class="form-control titulo" value="{{ $endereco->titulo }}">
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="row">
-                                                        <td class="col">
-                                                            CEP
-                                                            <input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678" value="{{ $endereco->cep }}">
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="row logradouro">
-                                                        <td class="col">
-                                                            Logradouro
-                                                            <input type="text" name="logradouros[]" class="form-control logradouro" value="{{ $endereco->logradouro }}">
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="row">
-                                                        <td class="col">
-                                                            Bairro
-                                                            <input type="text" name="bairros[]" class="form-control" value="{{ $endereco->bairro }}">
-                                                        </td>
-                                                        <td class="col">
-                                                            Número
-                                                            <input type="text" name="numeros[]" class="form-control" value="{{ $endereco->numero }}">
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="row">
-                                                        <td class="col">
-                                                            Localidade
-                                                            <input type="text" name="localidades[]" class="form-control" value="{{ $endereco->localidade }}">
-                                                        </td>
-                                                        <td class="col">
-                                                            UF
-                                                            <input type="text" name="ufs[]" class="form-control" value="{{ $endereco->uf }}">
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                @foreach ($contato->enderecos as $endereco)
+                                    {{-- Card Endereço --}}
+                                    <div class="card enderecoCard my-2">
+                                        <div class="card-header p-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1">{{ $endereco->titulo }}</div>
+                                                <div class=""><a class="btn btn-danger removeEnderecoCard">-</a></div>
                                             </div>
                                         </div>
-                                    @endforeach
-                                </div>
+                                        <div class="card-body">
+                                            <table class="table table-sm mb-0">
+                                                <tr class="row">
+                                                    <td class="col">
+                                                        Título
+                                                        <input type="text" name="titulos[]" class="form-control titulo" value="{{ $endereco->titulo }}">
+                                                    </td>
+                                                </tr>
+                                                <tr class="row">
+                                                    <td class="col">
+                                                        CEP
+                                                        <input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678" value="{{ $endereco->cep }}">
+                                                    </td>
+                                                </tr>
+                                                <tr class="row logradouro">
+                                                    <td class="col">
+                                                        Logradouro
+                                                        <input type="text" name="logradouros[]" class="form-control logradouro" value="{{ $endereco->logradouro }}" readonly>
+                                                    </td>
+                                                </tr>
+                                                <tr class="row">
+                                                    <td class="col">
+                                                        Bairro
+                                                        <input type="text" name="bairros[]" class="form-control" value="{{ $endereco->bairro }}" readonly>
+                                                    </td>
+                                                    <td class="col">
+                                                        Número
+                                                        <input type="text" name="numeros[]" class="form-control" value="{{ $endereco->numero }}">
+                                                    </td>
+                                                </tr>
+                                                <tr class="row">
+                                                    <td class="col">
+                                                        Localidade
+                                                        <input type="text" name="localidades[]" class="form-control" value="{{ $endereco->localidade }}" readonly>
+                                                    </td>
+                                                    <td class="col">
+                                                        UF
+                                                        <input type="text" name="ufs[]" class="form-control" value="{{ $endereco->uf }}" readonly>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 

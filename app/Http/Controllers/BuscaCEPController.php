@@ -20,6 +20,9 @@ class BuscaCEPController extends Controller
 
         $dados_endereco = json_decode($response->body());
 
+        if (isset($dados_endereco->erro))
+            return null;
+
         return $dados_endereco;
     }
 }

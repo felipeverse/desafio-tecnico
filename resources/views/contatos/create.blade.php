@@ -1,4 +1,5 @@
 @extends('layouts.app')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
@@ -86,7 +87,7 @@
                                                 <tr class="row">
                                                     <td class="col">
                                                         Título
-                                                        <input type="text" name="titulos[]" class="form-control titulo">
+                                                        <input type="text" name="titulos[]" class="form-control titulo" value="Endereço 01">
                                                     </td>
                                                 </tr>
                                                 <tr class="row">
@@ -98,13 +99,13 @@
                                                 <tr class="row logradouro">
                                                     <td class="col">
                                                         Logradouro
-                                                        <input type="text" name="logradouros[]" class="form-control logradouro">
+                                                        <input type="text" name="logradouros[]" class="form-control logradouro" readonly>
                                                     </td>
                                                 </tr>
                                                 <tr class="row">
                                                     <td class="col">
                                                         Bairro
-                                                        <input type="text" name="bairros[]" class="form-control">
+                                                        <input type="text" name="bairros[]" class="form-control" readonly>
                                                     </td>
                                                     <td class="col">
                                                         Número
@@ -114,11 +115,11 @@
                                                 <tr class="row">
                                                     <td class="col">
                                                         Localidade
-                                                        <input type="text" name="localidades[]" class="form-control">
+                                                        <input type="text" name="localidades[]" class="form-control" readonly>
                                                     </td>
                                                     <td class="col">
                                                         UF
-                                                        <input type="text" name="ufs[]" class="form-control">
+                                                        <input type="text" name="ufs[]" class="form-control" readonly>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -142,7 +143,6 @@
 
     $(document).ready(function(){
 
-        
         // Telefone scripts
         
         enableMasks();
