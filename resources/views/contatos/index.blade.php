@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 @section('content')
     <div class="container">
         @if (session('success'))
@@ -9,7 +10,11 @@
         @endif
         <div class="row justify-content-center">
             <div class="col-12">
-                <a href="contatos/create" class="btn btn-primary mb-2">Criar contato</a>
+                <a href="contatos/create" class="btn btn-primary mb-2">
+                    <i class="bi bi-plus"></i>
+                    Novo contato
+                </a>
+                
                 <br>
                 <table class="table table-bordered">
                     <thead>

@@ -3,8 +3,9 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 
-{{-- máscaras personalizadas --}}
+{{-- scripts personalizadas --}}
 <script src="/js/masks.js"></script>
 <script src="/js/contatos/cep.js"></script>
 <script src="/js/contatos/endereco.js"></script>
@@ -62,6 +63,10 @@
                                         </tr>
                                     </table>
                                 </div>
+                                <a class="addTelefoneRow d-flex justify-content-center btn btn-primary m-2">
+                                    <i class="bi bi-plus"></i>
+                                    Adicionar número
+                                </a>
                             </div>
 
                             {{-- Endereços --}}
@@ -125,13 +130,16 @@
                                             </table>
                                         </div>
                                     </div>
-
                                 </div>
+                                <a class="addEnderecoCard d-flex justify-content-center btn btn-primary m-2">
+                                    <i class="bi bi-plus"></i>
+                                    Adicionar endereço
+                                </a>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <a href="/contatos" class="btn btn-secondary">Cancelar</a>
                         </form>
-                        
                     </div>
                 </div>
             </div>
@@ -204,7 +212,7 @@
                                                 '<tr class="row">\n' +
                                                     '<td class="col">\n' +
                                                         'CEP\n' +
-                                                        '<input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678">\n' +
+                                                        '<input type="text" name="ceps[]" class="form-control cep-mask cep-search" placeholder="Ex.: 12345-678">' +
                                                     '</td>\n' +
                                                 '</tr>\n' +
                                                 '<tr class="row">\n' +

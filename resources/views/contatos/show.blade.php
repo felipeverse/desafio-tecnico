@@ -35,7 +35,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="border-bottom: none !important;">Endereços:</th>
+                                    <th style="border-bottom: none !important;"><h5>Endereços:</h5></th>
                                     <table>
                                         <tr>
                                             @foreach ($contato->enderecos as $endereco)
@@ -45,6 +45,7 @@
                                                         <p><strong>CEP: {{ $endereco->cep }}</strong></p>
                                                         <p><strong>Logradouro: {{ $endereco->logradouro }}</strong></p>
                                                         <p><strong>Bairro: {{ $endereco->bairro }}</strong></p>
+                                                        <p><strong>Número: {{ $endereco->numero }}</strong></p>
                                                         <p><strong>Localidade: {{ $endereco->localidade }}</strong></p>
                                                         <p><strong>UF: {{ $endereco->uf }}</strong></p>
                                                     </div>
@@ -55,6 +56,8 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <a href="/contatos/{{ $contato->id }}/edit" class="btn btn-primary">Editar</a>
+                        <a href="/contatos" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </div>
             </div>
