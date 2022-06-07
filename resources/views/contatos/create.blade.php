@@ -274,13 +274,13 @@
                                                 '<tr class="row">\n' +
                                                     '<td class="col">\n' +
                                                         'Logradouro\n' +
-                                                        '<input type="text" name="logradouros[]" class="form-control">\n' +
+                                                        '<input type="text" name="logradouros[]" class="form-control" readonly>\n' +
                                                     '</td>\n' +
                                                 '</tr>\n' +
                                                 '<tr class="row">\n' +
                                                     '<td class="col">\n' +
                                                         'Bairro\n' +
-                                                        '<input type="text" name="bairros[]" class="form-control">\n' +
+                                                        '<input type="text" name="bairros[]" class="form-control" readonly>\n' +
                                                     '</td>\n' +
                                                     '<td class="col">\n' +
                                                         'Número\n' +
@@ -290,11 +290,11 @@
                                                 '<tr class="row">\n' +
                                                     '<td class="col">\n' +
                                                         'Localidade\n' +
-                                                        '<input type="text" name="localidades[]" class="form-control">\n' +
+                                                        '<input type="text" name="localidades[]" class="form-control" readonly>\n' +
                                                     '</td>\n' +
                                                     '<td class="col">\n' +
                                                         'UF\n' +
-                                                        '<input type="text" name="ufs[]" class="form-control">\n' +
+                                                        '<input type="text" name="ufs[]" class="form-control" readonly>\n' +
                                                     '</td>\n' +
                                                 '</tr>\n' +
                                             '</table>\n' +
