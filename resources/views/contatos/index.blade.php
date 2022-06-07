@@ -16,14 +16,14 @@
                 </a>
                 
                 <br>
-                <table class="table table-bordered">
+                <table class="table table-bordered table-striped align-middle">
                     <thead>
-                        <tr>
+                        <tr class="">
                             <th>Id</th>
                             <th>Nome</th>
                             <th>Email</th>
                             <th>Telefone</th>
-                            <th colspan="2">Action</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,12 +40,12 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <a href="contatos/{{ $contato->id }}" class="btn btn-primary">Show</a>
-                                    <a href="contatos/{{ $contato->id }}/edit" class="btn btn-primary">Edit</a>
-                                    <form action="contatos/{{ $contato->id }}" method="post" class="d-inline">
+                                    <a href="contatos/{{ $contato->id }}" class="btn btn-primary m-1"><i class="bi bi-eye"></i></a>
+                                    <a href="contatos/{{ $contato->id }}/edit" class="btn btn-primary m-1"><i class="bi bi-pencil-square"></i></a>
+                                    <form action="contatos/{{ $contato->id }}" method="post" class="d-inline m-1">
                                         {{ csrf_field() }}
                                         @method('DELETE')
-                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                        <button class="btn btn-danger" type="submit"><i class="bi bi-trash3-fill"></i></button>
                                     </form>
                                 </td>
                             </tr>
