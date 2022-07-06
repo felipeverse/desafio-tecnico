@@ -18,7 +18,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'after' => [
-                // teste
                 'nome'          => 'cast:integer',
                 'email'         => 'cast:string',
                 'telefones'     => 'cast:array',
@@ -49,7 +48,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome'          => 'required|string|max:2',
+            'nome'          => 'required|string',
             'email'         => 'required|email',
             'telefones'     => 'required|array',
             'telefones.*'   => 'required|string',
@@ -79,7 +78,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'nome.required'        => __('requests/contatos/update.name_required'),
-            'nome.string'         => __('requests/contatos/update.name_string'),
+            'nome.string'          => __('requests/contatos/update.name_string'),
             'email.required'       => __('requests/contatos/update.email_required'),
             'email.email'          => __('requests/contatos/update.email_email'),
             'telefones.array'      => __('requests/contatos/update.telefones_array'),

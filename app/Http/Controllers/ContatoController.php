@@ -66,7 +66,7 @@ class ContatoController extends Controller
             $contato->telefones()->create(
                 [
                     'contato_id' => $contato->id,
-                    'numero' => $telefone
+                    'numero'     => $telefone
                 ]
             );
         }
@@ -75,13 +75,13 @@ class ContatoController extends Controller
             $contato->enderecos()->create(
                 [
                 'contato_id' => $contato->id,
-                'cep' => $cep,
-                'titulo' => $request->titulos[$key],
+                'cep'        => $cep,
+                'titulo'     => $request->titulos[$key],
                 'logradouro' => $request->logradouros[$key],
-                'bairro' => $request->bairros[$key],
-                'numero' => $request->numeros[$key],
+                'bairro'     => $request->bairros[$key],
+                'numero'     => $request->numeros[$key],
                 'localidade' => $request->localidades[$key],
-                'uf' => $request->ufs[$key]
+                'uf'         => $request->ufs[$key]
                 ]
             );
         }
@@ -129,7 +129,7 @@ class ContatoController extends Controller
             $contato->telefones()->create(
                 [
                     'contato_id' => $contato->id,
-                    'numero' => $telefone
+                    'numero'     => $telefone
                 ]
             );
         }
@@ -140,13 +140,13 @@ class ContatoController extends Controller
             $contato->enderecos()->create(
                 [
                     'contato_id' => $contato->id,
-                    'cep' => $cep,
-                    'titulo' => $request->titulos[$key],
+                    'cep'        => $cep,
+                    'titulo'     => $request->titulos[$key],
                     'logradouro' => $request->logradouros[$key],
-                    'bairro' => $request->bairros[$key],
-                    'numero' => $request->numeros[$key],
+                    'bairro'     => $request->bairros[$key],
+                    'numero'     => $request->numeros[$key],
                     'localidade' => $request->localidades[$key],
-                    'uf' => $request->ufs[$key],
+                    'uf'         => $request->ufs[$key],
                 ]
             );
         }
