@@ -24,11 +24,11 @@ class ContatoController extends Controller
      */
     public function index(IndexRequest $request): View
     {
-        $search_name = $request->query('search_name');
+        $searchName = $request->query('search_name');
 
-        if (!empty($search_name)) {
+        if (!empty($searchName)) {
             $contatos = Contato::sortable()
-                ->where('contatos.nome', 'like', '%'.$search_name.'%')
+                ->where('contatos.nome', 'like', '%'.$searchName.'%')
                 ->paginate(5);
         } else {
             $contatos = Contato::sortable()
