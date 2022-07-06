@@ -43,9 +43,15 @@
 
                         <form action="/contatos" method="post">
                             @csrf
+
+                            {{-- Nome --}}
                             <div class="form-group my-2">
                                 <label for="">Nome</label>
-                                <input type="text" name="nome" class="form-control @error('nome') is-invalid @enderror">
+                                @if (is_null(old('nome')))
+                                    <input type="text" name="nome" class="form-control @error('nome') is-invalid @enderror">
+                                @else
+                                    <input type="text" value="{{ old('nome') }}" name="nome" class="form-control @error('nome') is-invalid @enderror">
+                                @endif
                                 @error('nome')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -53,9 +59,14 @@
                                 @enderror
                             </div>
 
+                            {{-- Email --}}
                             <div class="form-group my-2">
                                 <label for="">Email</label>
-                                <input type="email" name="email" class="form-control">
+                                @if (is_null(old('email')))
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror)">
+                                @else
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror)">                                
+                                @endif
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -73,15 +84,38 @@
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-sm mb-0 telefone-table">
-                                        <tr class="row">
-                                            <td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000"></td>
-                                            @error('telefones')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                            <td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </a></td>
-                                        </tr>
+                                        @if(is_null(old('telefones')))
+                                            <tr class="row">
+                                                <td class="col">
+                                                    <input type="text" name="telefones[]" class="form-control phone-ddd-mask placeholder="Ex.: (00) 0000-0000">
+                                                </td>
+                                                @error('telefones')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                                <td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </a></td>
+                                            </tr>
+                                        @else
+                                            @foreach (old('telefones') as $key => $telefone)
+                                                <tr class="row">
+                                                    <td class="col">
+                                                        <input type="text" name="telefones[]" value="{{ old('telefones')[$key] }}" class="form-control phone-ddd-mask is-invalid" placeholder="Ex.: (00) 0000-0000">
+                                                        @foreach ($errors->getBag("default")->get("telefones." . $key) as $error)
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $error }}</strong>
+                                                            </span>
+                                                        @endforeach
+                                                    </td>
+                                                    @error('telefones')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $errors->all() }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                    <td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </a></td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </table>
                                 </div>
                                 <a class="addTelefoneRow d-flex justify-content-center btn btn-primary m-2">
@@ -98,6 +132,7 @@
                                         <div class=""><a class="btn btn-primary addEnderecoCard">+</a></div>
                                     </div>
                                 </div>
+
                                 <div class="card-body enderecos-main-card">
 
                                     {{-- Card Endereço --}}
@@ -187,6 +222,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <a class="addEnderecoCard d-flex justify-content-center btn btn-primary m-2">
                                     <i class="bi bi-plus"></i>
                                     Adicionar endereço
@@ -219,7 +255,7 @@
         function addTelefoneRow() {
             var addRow = '<tr class="row">\n' + 
                             '<td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000"></td>\n' +
-                            '<td class="col-auto"><a class="btn btn-danger remove"> - </i></a></td>\n' +
+                            '<td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </i></a></td>\n' +
                         '</tr>';
             $('.telefone-table').append(addRow);
         };

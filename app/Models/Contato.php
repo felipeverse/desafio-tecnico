@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contato extends Model
 {
     use HasFactory;
     use Sortable;
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['nome', 'email'];
 
     public $sortable = ['id', 'nome'];
 

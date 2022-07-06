@@ -20,8 +20,8 @@
                     <form class="" method="GET">
                         <div class="form-group mb-2">
                             <div class="d-flex">
-                                <input type="text" class="form-control me-2" id="filter" name="filter" placeholder="Nome do contato..." value="">
-                                <button class="btn btn-success" type="submit" class="btn btn-default mb-2">Filter</button>
+                                <input type="text" class="form-control me-2" id="search_name" name="search_name" placeholder="Nome do contato..." value="">
+                                <button class="btn btn-success" type="submit" class="btn btn-default mb-2">Buscar Contato</button>
                             </div>
                         </div>
                     </form>

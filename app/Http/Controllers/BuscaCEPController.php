@@ -9,20 +9,20 @@ class BuscaCEPController extends Controller
 {
     public function fetch($cep)
     {
-        $base_url = 'https://viacep.com.br/ws/';
+        $baseURL = 'https://viacep.com.br/ws/';
 
-        $request_url = $base_url . $cep . '/json/'; 
+        $requestURL = $baseURL . $cep . '/json/'; 
 
-        $response = Http::get($request_url);
+        $response = Http::get($requestURL);
 
         if ($response->status() != 200)
             return null;
 
-        $dados_endereco = json_decode($response->body());
+        $dadosEndereco = json_decode($response->body());
 
-        if (isset($dados_endereco->erro))
+        if (isset($dadosEndereco->erro))
             return null;
 
-        return $dados_endereco;
+        return $dadosEndereco;
     }
 }
