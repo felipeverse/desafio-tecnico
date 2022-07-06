@@ -11,7 +11,7 @@ class Contato extends Model
     use HasFactory;
     use Sortable;
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['nome', 'email'];
 
     public $sortable = ['id', 'nome'];
 

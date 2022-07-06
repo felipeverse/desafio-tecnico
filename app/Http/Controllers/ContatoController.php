@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Contato;
+use Illuminate\Http\Request;
+use App\Jobs\ContatoEmailJob;
 use App\Models\ContatoEndereco;
 use App\Models\ContatoTelefone;
-use App\Jobs\ContatoEmailJob;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\Contatos\IndexRequest;
+use App\Http\Requests\Contatos\StoreRequest;
+use App\Http\Requests\Contatos\UpdateRequest;
+use Illuminate\View\View;
 
 class ContatoController extends Controller
 {
-    public function index(Request $request)
-    {
-        $filter = $request->query('filter');
 
-        if (!empty($filter)) {
+    /**
+     * Método para listar contatos
+     * @param IndexRequest $request
+     * @return View
+     */
+    public function index(IndexRequest $request): View
+    {
+        $search_name = $request->query('search_name');
+
+        if (!empty($search_name)) {
             $contatos = Contato::sortable()
-                ->where('contatos.nome', 'like', '%'.$filter.'%')
+                ->where('contatos.nome', 'like', '%'.$search_name.'%')
                 ->paginate(5);
         } else {
             $contatos = Contato::sortable()
@@ -31,26 +42,33 @@ class ContatoController extends Controller
         return view('contatos.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Armazena um contato
+     * 
+     * @param StoreRequest $request
+     * @return RedirectResponse 
+     */
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'nome' => 'required',
-            'email' => 'required'
-        ]);
+        // dd($request);
         $contato = new Contato();
         $contato->nome = $request->nome;
         $contato->email = $request->email;
+
         $contato->save();
 
         foreach ($request->telefones as $key => $telefone) {
-            $contato->telefones()->create([
-                'contato_id' => $contato->id,
-                'numero' => $telefone
-            ]);
+            $contato->telefones()->create(
+                [
+                    'contato_id' => $contato->id,
+                    'numero' => $telefone
+                ]
+            );
         }
         
         foreach ($request->ceps as $key => $cep) {
-            $contato->enderecos()->create([
+            $contato->enderecos()->create(
+                [
                 'contato_id' => $contato->id,
                 'cep' => $cep,
                 'titulo' => $request->titulos[$key],
@@ -58,8 +76,9 @@ class ContatoController extends Controller
                 'bairro' => $request->bairros[$key],
                 'numero' => $request->numeros[$key],
                 'localidade' => $request->localidades[$key],
-                'uf' => $request->ufs[$key],
-            ]);
+                'uf' => $request->ufs[$key]
+                ]
+            );
         }
 
         $details['contato'] = $contato;
@@ -79,12 +98,17 @@ class ContatoController extends Controller
         return view('contatos.edit', compact('contato'));
     }
 
-    public function update(Contato $contato, Request $request)
+    /**
+     * Atualiza um contato
+     * 
+     * @param Contato $contato
+     * @param StoreRequest $request
+     * @return RedirectResponse 
+     */
+    public function update(UpdateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'nome' => 'required',
-            'email' => 'required'
-        ]);
+        dd($request);
+        $contato = new Contato();
         $contato->nome = $request->nome;
         $contato->email = $request->email;
         $contato->save();
@@ -92,25 +116,29 @@ class ContatoController extends Controller
         ContatoTelefone::where('contato_id', $contato->id)->delete();
 
         foreach ($request->telefones as $key => $telefone) {
-            $contato->telefones()->create([
-                'contato_id' => $contato->id,
-                'numero' => $telefone
-            ]);
+            $contato->telefones()->create(
+                [
+                    'contato_id' => $contato->id,
+                    'numero' => $telefone
+                ]
+            );
         }
 
         ContatoEndereco::where('contato_id', $contato->id)->delete();
 
         foreach ($request->ceps as $key => $cep) {
-            $contato->enderecos()->create([
-                'contato_id' => $contato->id,
-                'cep' => $cep,
-                'titulo' => $request->titulos[$key],
-                'logradouro' => $request->logradouros[$key],
-                'bairro' => $request->bairros[$key],
-                'numero' => $request->numeros[$key],
-                'localidade' => $request->localidades[$key],
-                'uf' => $request->ufs[$key],
-            ]);
+            $contato->enderecos()->create(
+                [
+                    'contato_id' => $contato->id,
+                    'cep' => $cep,
+                    'titulo' => $request->titulos[$key],
+                    'logradouro' => $request->logradouros[$key],
+                    'bairro' => $request->bairros[$key],
+                    'numero' => $request->numeros[$key],
+                    'localidade' => $request->localidades[$key],
+                    'uf' => $request->ufs[$key],
+                ]
+            );
         }
 
         return redirect('/contatos')->with('success', 'Contato atualizado com sucesso!');

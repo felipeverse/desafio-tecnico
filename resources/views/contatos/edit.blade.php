@@ -12,6 +12,22 @@
 <script src="/js/contatos/endereco.js"></script>
 
 @section('content')
+    @if(Session::has('error'))
+        <div class="alert alert-danger">
+            {{ Session::get('error')}}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -30,12 +46,22 @@
                         @method('PUT')
                         <div class="form-group my-2">
                             <label for="">Nome</label>
-                            <input type="text" name="nome" class="form-control" value="{{ $contato->nome }}">
+                            <input type="text" name="nome" class="form-control @error('nome') is-invalid @enderror" value="{{ $contato->nome }}">
+                            @error('nome')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
 
                         <div class="form-group my-2">
                             <label for="">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ $contato->email }}">
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ $contato->email }}">
+                            @error('nome')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
 
                         <div class="card my-2">
@@ -45,6 +71,7 @@
                                     <div><a class="btn btn-primary addTelefoneRow">+</a></div>
                                 </div>
                             </div>
+
                             {{-- Telefones --}}
                             <div class="card-body">
                                 <table class="table table-sm mb-0 telefone-table">
