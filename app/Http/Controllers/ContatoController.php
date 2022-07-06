@@ -56,7 +56,6 @@ class ContatoController extends Controller
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        // dd($request);
         $contato = new Contato();
         $contato->nome = $request->nome;
         $contato->email = $request->email;
@@ -119,7 +118,6 @@ class ContatoController extends Controller
      */
     public function update(UpdateRequest $request): RedirectResponse
     {
-        dd($request);
         $contato = new Contato();
         $contato->nome = $request->nome;
         $contato->email = $request->email;
