@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contato;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Jobs\ContatoEmailJob;
 use App\Models\ContatoEndereco;
@@ -11,13 +12,13 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Contatos\IndexRequest;
 use App\Http\Requests\Contatos\StoreRequest;
 use App\Http\Requests\Contatos\UpdateRequest;
-use Illuminate\View\View;
 
 class ContatoController extends Controller
 {
 
     /**
      * Método para listar contatos
+     * 
      * @param IndexRequest $request
      * @return View
      */
@@ -37,6 +38,11 @@ class ContatoController extends Controller
         return view('contatos.index', compact('contatos'));
     }
 
+    /**
+     * Mostra view para criar novo contato
+     * 
+     * @return View
+     */
     public function create()
     {
         return view('contatos.create');
@@ -88,6 +94,12 @@ class ContatoController extends Controller
         return redirect('/contatos')->with('success', 'Contato criado com sucesso!');
     }
 
+    /**
+     * Mostra um contato
+     * 
+     * @param Contato $contato
+     * @return View
+     */
     public function show(Contato $contato)
     {
         return view('contatos.show', compact('contato'));
