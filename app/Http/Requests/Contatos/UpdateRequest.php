@@ -18,7 +18,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'after' => [
-                'nome'          => 'cast:integer',
+                'nome'          => 'cast:string',
                 'email'         => 'cast:string',
                 'telefones'     => 'cast:array',
                 'telefones.*'   => 'cast:string',
