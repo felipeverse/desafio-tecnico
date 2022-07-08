@@ -17,7 +17,6 @@ use App\Services\Contracts\ContatosServiceInterface;
 
 class ContatoController extends Controller
 {
-
     use ResponseHelpers;
 
     /**
@@ -32,7 +31,7 @@ class ContatoController extends Controller
 
     /**
      * Método para listar contatos
-     * 
+     *
      * @param IndexRequest $request
      * @return View
      */
@@ -41,7 +40,7 @@ class ContatoController extends Controller
         $searchName = $request->query('search_name');
 
         $contatosResponse = app(ContatosServiceInterface::class)->all($searchName);
-        
+
         if (!$contatosResponse->success) {
             return $this->backWithFlash($contatosResponse->message, 'danger');
         }
@@ -53,7 +52,7 @@ class ContatoController extends Controller
 
     /**
      * Mostra view para criar novo contato
-     * 
+     *
      * @return View
      */
     public function create()
@@ -63,9 +62,9 @@ class ContatoController extends Controller
 
     /**
      * Armazena um contato
-     * 
+     *
      * @param StoreRequest $request
-     * @return RedirectResponse 
+     * @return RedirectResponse
      */
     public function store(StoreRequest $request): RedirectResponse
     {
@@ -83,7 +82,7 @@ class ContatoController extends Controller
                 ]
             );
         }
-        
+
         foreach ($request->ceps as $key => $cep) {
             $contato->enderecos()->create(
                 [
@@ -108,7 +107,7 @@ class ContatoController extends Controller
 
     /**
      * Mostra um contato
-     * 
+     *
      * @param Contato $contato
      * @return View
      */
@@ -138,18 +137,34 @@ class ContatoController extends Controller
 
     /**
      * Atualiza um contato
-     * 
+     *
      * @param $id
      * @param StoreRequest $request
-     * @return RedirectResponse 
+     * @return RedirectResponse
      */
     public function update($id, UpdateRequest $request): RedirectResponse
     {
-        $updateResponse = app(ContatosServiceInterface::class)->update($id, $request->all());
+        // Impelementar a service params;
+        // contact_id int
+        // nome string
+        // email string
+        // telefones array
+        // enderecos array
+
+        // $params = new UpdateCompleteContactParams(
+        //     $request->contact_id,
+        //     $request->nome,
+        //     $request->string,
+        //     $request->telefones,
+        //     $request->ceps
+        // );
+        // $updateResponse = app(ContatosServiceInterface::class)->update($id, $params);
+
+        $updateResponse = app(ContatosServiceInterface::class)->updateCompletContact($id, $request->all());
         if (!$updateResponse->success) {
             return $this->backWithFlash($updateResponse->message, 'danger');
         }
-    
+
         return redirect('/contatos')->with('success', 'Contato atualizado com sucesso!');
     }
 

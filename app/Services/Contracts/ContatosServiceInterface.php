@@ -2,7 +2,6 @@
 
 namespace App\Services\Contracts;
 
-use App\Models\Contato;
 use App\Services\Responses\ServiceResponse;
 
 interface ContatosServiceInterface
