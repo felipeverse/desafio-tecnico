@@ -9,6 +9,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if (session('danger'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('danger') }}
+            </div>
+        @endif
         <div class="row justify-content-center">
             <div class="col-12">
                 <a href="contatos/create" class="btn btn-primary mb-2">
@@ -21,12 +26,12 @@
                         <div class="form-group mb-2">
                             <div class="d-flex">
                                 <input type="text" class="form-control me-2" id="search_name" name="search_name" placeholder="Nome do contato..." value="">
-                                <button class="btn btn-success" type="submit" class="btn btn-default mb-2">Buscar Contato</button>
+                                <button class="btn btn-success" type="submit" class="btn btn-default mb-2">Buscar</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                
+
                 <br>
                 <table class="table table-bordered table-striped align-middle">
                     <thead>
