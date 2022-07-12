@@ -10,6 +10,7 @@ class ContatoEndereco extends Model
     use HasFactory;
 
     protected $fillable = [
+        'contato_id',
         'titulo',
         'cep',
         'logradouro',
