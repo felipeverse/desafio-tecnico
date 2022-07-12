@@ -4,7 +4,7 @@ namespace App\Services\Params\Contato;
 
 use App\Services\Params\BaseServiceParams;
 
-class CreateContatoServiceParams extends BaseServiceParams
+class UpdateContatoServiceParams extends BaseServiceParams
 {
     public $nome;
     public $email;
