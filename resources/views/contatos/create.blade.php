@@ -16,6 +16,11 @@
             {{ Session::get('error')}}
         </div>
     @endif
+    @if (session('danger'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('danger') }}
+        </div>
+    @endif
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -32,7 +37,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Criar Contato</div>
-                    
+
                     <div class="card-body">
 
                         @if (session('success'))
@@ -65,7 +70,7 @@
                                 @if (is_null(old('email')))
                                     <input type="email" name="email" class="form-control @error('email') is-invalid @enderror)">
                                 @else
-                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror)">                                
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror)">
                                 @endif
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -222,7 +227,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <a class="addEnderecoCard d-flex justify-content-center btn btn-primary m-2">
                                     <i class="bi bi-plus"></i>
                                     Adicionar endereço
@@ -244,22 +249,22 @@
     $(document).ready(function(){
 
         // Telefone scripts
-        
+
         enableMasks();
         $('.addTelefoneRow').on('click', function () {
             addTelefoneRow();
             enableMasks();
         });
-    
+
         // Adiciona nova linha para preenchimento de telefone
         function addTelefoneRow() {
-            var addRow = '<tr class="row">\n' + 
+            var addRow = '<tr class="row">\n' +
                             '<td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000"></td>\n' +
                             '<td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </i></a></td>\n' +
                         '</tr>';
             $('.telefone-table').append(addRow);
         };
-    
+
         // Remove linha de endereço
         $('.removeTelefoneRow').live('click', function () {
             var l = $('.telefone-table tr').length;
@@ -268,21 +273,21 @@
             }else{
                 $(this).parent().parent().remove();
             }
-        
+
         });
 
         // Endereços Scripts
 
         enableCEPSearch();
         atualizaTituloEndereco();
-        
+
         $('.addEnderecoCard').on('click', function () {
             addCardRow();
             enableMasks();
             enableCEPSearch();
             atualizaTituloEndereco();
         });
-        
+
         // Adiciona novo card de para preenchimento de endereço
         function addCardRow() {
             var enderecoCard = '{{-- Card Endereço --}}\n' +
@@ -338,7 +343,7 @@
                                     '</div>';
             $('.enderecos-main-card').append(enderecoCard);
         };
-    
+
         // Remove card de endereço
         $('.removeEnderecoCard').live('click', function () {
             var l = $('.enderecoCard').length;
@@ -347,7 +352,7 @@
             }else{
                 $(this).parent().parent().parent().parent().remove();
             }
-        
+
         });
 
     });

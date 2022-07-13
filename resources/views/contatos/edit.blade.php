@@ -17,6 +17,11 @@
             {{ Session::get('error')}}
         </div>
     @endif
+    @if (session('danger'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('danger') }}
+        </div>
+    @endif
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -75,7 +80,7 @@
                             {{-- Telefones --}}
                             <div class="card-body">
                                 <table class="table table-sm mb-0 telefone-table">
-                                    @foreach ($contato->telefones as $telefone)                          
+                                    @foreach ($contato->telefones as $telefone)
                                         <tr class="row">
                                             <td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000" value="{{ $telefone->numero }}"></td>
                                             <td class="col-auto"><a class="btn btn-danger removeTelefoneRow"> - </a></td>
@@ -178,15 +183,15 @@
             addTelefoneRow();
             enableMasks();
         });
-    
+
         function addTelefoneRow() {
-            var addRow = '<tr class="row">\n' + 
+            var addRow = '<tr class="row">\n' +
                             '<td class="col"><input type="text" name="telefones[]" class="form-control phone-ddd-mask" placeholder="Ex.: (00) 0000-0000"></td>\n' +
                             '<td class="col-auto"><a class="btn btn-danger remove"> - </i></a></td>\n' +
                         '</tr>';
             $('.telefone-table').append(addRow);
         };
-    
+
         $('.removeTelefoneRow').live('click', function () {
             var l = $('.telefone-table tr').length;
             if(l==1){
@@ -194,21 +199,21 @@
             }else{
                 $(this).parent().parent().remove();
             }
-        
+
         });
 
         // Endereços Scripts
 
         enableCEPSearch();
         atualizaTituloEndereco();
-        
+
         $('.addEnderecoCard').on('click', function () {
             addCardRow();
             enableMasks();
             enableCEPSearch();
             atualizaTituloEndereco();
         });
-        
+
         // Adiciona novo card de para preenchimento de endereço
         function addCardRow() {
             var enderecoCard = '{{-- Card Endereço --}}\n' +
@@ -264,7 +269,7 @@
                                     '</div>';
             $('.enderecos-main-card').append(enderecoCard);
         };
-    
+
         // Remove card de endereço
         $('.removeEnderecoCard').live('click', function () {
             var l = $('.enderecoCard').length;
@@ -273,7 +278,7 @@
             }else{
                 $(this).parent().parent().parent().parent().remove();
             }
-        
+
         });
 
     });

@@ -13,6 +13,11 @@
                                 {{ session('success') }}
                             </div>
                         @endif
+                        @if (session('danger'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ session('danger') }}
+                            </div>
+                        @endif
 
                         <table class="table">
                             <tbody>

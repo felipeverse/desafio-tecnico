@@ -2,161 +2,188 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contato;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
-use App\Jobs\ContatoEmailJob;
-use App\Models\ContatoEndereco;
-use App\Models\ContatoTelefone;
+use App\Traits\ResponseHelpers;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Contatos\IndexRequest;
 use App\Http\Requests\Contatos\StoreRequest;
 use App\Http\Requests\Contatos\UpdateRequest;
+use App\Services\Contracts\ContatoServiceInterface;
+use App\Services\Params\Contato\CreateCompleteContatoServiceParams;
+use App\Services\Params\Contato\UpdateCompleteContatoServiceParams;
 
 class ContatoController extends Controller
 {
+    use ResponseHelpers;
+
+    /**
+     * @var ContatoServiceInterface
+     */
+    protected $contatosService;
+
+    public function __construct(ContatoServiceInterface $contatosService)
+    {
+        $this->contatosService = $contatosService;
+    }
 
     /**
      * Método para listar contatos
-     * 
+     *
      * @param IndexRequest $request
-     * @return View
+     * @return View|RedirectReponse
      */
-    public function index(IndexRequest $request): View
+    public function index(IndexRequest $request)
     {
         $searchName = $request->query('search_name');
 
-        if (!empty($searchName)) {
-            $contatos = Contato::sortable()
-                ->where('contatos.nome', 'like', '%'.$searchName.'%')
-                ->paginate(5);
-        } else {
-            $contatos = Contato::sortable()
-                ->paginate(5);
+        $contatosResponse = app(ContatoServiceInterface::class)->all($searchName);
+
+        if (!$contatosResponse->success) {
+            return redirect(url()->previous())->with('danger', $contatosResponse->message);
         }
+
+        $contatos = $contatosResponse->data;
 
         return view('contatos.index', compact('contatos'));
     }
 
     /**
      * Mostra view para criar novo contato
-     * 
+     *
      * @return View
      */
-    public function create()
+    public function create(): View
     {
         return view('contatos.create');
     }
 
     /**
      * Armazena um contato
-     * 
+     *
      * @param StoreRequest $request
-     * @return RedirectResponse 
+     * @return RedirectResponse
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $contato = new Contato();
-        $contato->nome = $request->nome;
-        $contato->email = $request->email;
-
-        $contato->save();
-
-        foreach ($request->telefones as $key => $telefone) {
-            $contato->telefones()->create(
-                [
-                    'contato_id' => $contato->id,
-                    'numero'     => $telefone
-                ]
-            );
-        }
-        
-        foreach ($request->ceps as $key => $cep) {
-            $contato->enderecos()->create(
-                [
-                'contato_id' => $contato->id,
-                'cep'        => $cep,
-                'titulo'     => $request->titulos[$key],
-                'logradouro' => $request->logradouros[$key],
-                'bairro'     => $request->bairros[$key],
-                'numero'     => $request->numeros[$key],
-                'localidade' => $request->localidades[$key],
-                'uf'         => $request->ufs[$key]
-                ]
-            );
+        // Obtém array com enderecos do request
+        $enderecos = [];
+        foreach ($request->titulos as $key => $titulo) {
+            $enderecos[] = (object) [
+                "titulo"     => $request->titulos[$key],
+                "cep"        => $request->ceps[$key],
+                "logradouro" => $request->logradouros[$key],
+                "bairro"     => $request->bairros[$key],
+                "localidade" => $request->localidades[$key],
+                "uf"         => $request->ufs[$key],
+                "numero"     => $request->numeros[$key],
+            ];
         }
 
-        $details['contato'] = $contato;
-        $details['email']   = 'felipealvesrrodrigues@outlook.com';
-        dispatch(new ContatoEmailJob($details));
+        $params = new CreateCompleteContatoServiceParams(
+            $request->nome,
+            $request->email,
+            $request->telefones,
+            $enderecos
+        );
+
+        $createResponse = app(ContatoServiceInterface::class)->createComplete($params);
+
+        if (!$createResponse->success) {
+            return redirect(url()->previous())->with('danger', $createResponse->message);
+        }
 
         return redirect('/contatos')->with('success', 'Contato criado com sucesso!');
     }
 
     /**
      * Mostra um contato
-     * 
-     * @param Contato $contato
-     * @return View
+     *
+     * @param integer $id
+     * @return View|RedirectResponse
      */
-    public function show(Contato $contato)
+    public function show(int $id)
     {
+        $contatoResponse = app(ContatoServiceInterface::class)->find($id);
+
+        if (!$contatoResponse->success) {
+            return redirect('/contatos')->with('danger', $contatoResponse->message);
+        }
+
+        $contato = $contatoResponse->data;
         return view('contatos.show', compact('contato'));
     }
 
-    public function edit(Contato $contato)
+    /**
+     * Recupera e mostra contato para edição
+     *
+     * @param integer $id
+     * @return View|RedirectResponse
+     */
+    public function edit(int $id)
     {
+        $contatoResponse = app(ContatoServiceInterface::class)->find($id);
+
+        if (!$contatoResponse->success) {
+            return redirect('/contatos')->with('danger', $contatoResponse->message);
+        }
+
+        $contato = $contatoResponse->data;
         return view('contatos.edit', compact('contato'));
     }
 
     /**
      * Atualiza um contato
-     * 
-     * @param Contato $contato
-     * @param StoreRequest $request
-     * @return RedirectResponse 
+     *
+     * @param integer $id
+     * @param UpdateRequest $request
+     * @return RedirectResponse
      */
-    public function update(UpdateRequest $request): RedirectResponse
+    public function update(int $id, UpdateRequest $request): RedirectResponse
     {
-        $contato = new Contato();
-        $contato->nome = $request->nome;
-        $contato->email = $request->email;
-        $contato->save();
-
-        ContatoTelefone::where('contato_id', $contato->id)->delete();
-
-        foreach ($request->telefones as $key => $telefone) {
-            $contato->telefones()->create(
-                [
-                    'contato_id' => $contato->id,
-                    'numero'     => $telefone
-                ]
-            );
+        // Obtém array com enderecos do request
+        $enderecos = [];
+        foreach ($request->titulos as $key => $titulo) {
+            $enderecos[] = (object) [
+                "titulo"     => $request->titulos[$key],
+                "cep"        => $request->ceps[$key],
+                "logradouro" => $request->logradouros[$key],
+                "bairro"     => $request->bairros[$key],
+                "localidade" => $request->localidades[$key],
+                "uf"         => $request->ufs[$key],
+                "numero"     => $request->numeros[$key],
+            ];
         }
 
-        ContatoEndereco::where('contato_id', $contato->id)->delete();
+        $params = new UpdateCompleteContatoServiceParams(
+            $request->nome,
+            $request->email,
+            $request->telefones,
+            $enderecos
+        );
 
-        foreach ($request->ceps as $key => $cep) {
-            $contato->enderecos()->create(
-                [
-                    'contato_id' => $contato->id,
-                    'cep'        => $cep,
-                    'titulo'     => $request->titulos[$key],
-                    'logradouro' => $request->logradouros[$key],
-                    'bairro'     => $request->bairros[$key],
-                    'numero'     => $request->numeros[$key],
-                    'localidade' => $request->localidades[$key],
-                    'uf'         => $request->ufs[$key],
-                ]
-            );
+        $updateResponse = app(ContatoServiceInterface::class)->updateComplete($params, $id);
+
+        if (!$updateResponse->success) {
+            return redirect(url()->previous())->with('danger', $updateResponse->message);
         }
 
         return redirect('/contatos')->with('success', 'Contato atualizado com sucesso!');
     }
 
-    public function destroy(Contato $contato)
+    /**
+     * Deleta um contato
+     *
+     * @param integer $id
+     * @return RedirectResponse
+     */
+    public function destroy(int $id): RedirectResponse
     {
-        $contato->delete();
+        $deleteResponse = app(ContatoServiceInterface::class)->delete($id);
+
+        if (!$deleteResponse->success) {
+            return redirect('/contatos')->with('danger', $deleteResponse->message);
+        }
+
         return redirect('/contatos')->with('success', 'Contato deletado com sucesso!');
     }
 }

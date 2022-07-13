@@ -9,9 +9,14 @@ class ContatoTelefone extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['numero'];
+    protected $fillable =
+    [
+        'contato_id',
+        'numero'
+    ];
 
-    public function contato() {
+    public function contato()
+    {
         return $this->belongsTo(Contato::class);
     }
 }

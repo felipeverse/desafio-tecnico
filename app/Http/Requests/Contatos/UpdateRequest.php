@@ -18,7 +18,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'after' => [
-                'nome'          => 'cast:integer',
+                'nome'          => 'cast:string',
                 'email'         => 'cast:string',
                 'telefones'     => 'cast:array',
                 'telefones.*'   => 'cast:string',
@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
                 'localidades'   => 'cast:array',
                 'localidades.*' => 'cast:string',
                 'ufs'           => 'cast:array',
-                'ufs.*'         => 'cast:string'
+                'ufs.*'         => 'cast:string',
             ]
         ];
     }
@@ -65,7 +65,7 @@ class UpdateRequest extends FormRequest
             'localidades'   => 'required:array',
             'localidades.*' => 'required|string',
             'ufs'           => 'required:array',
-            'ufs.*'         => 'required|string'
+            'ufs.*'         => 'required|string',
         ];
     }
 
@@ -96,7 +96,7 @@ class UpdateRequest extends FormRequest
             'localidades'          => __('requests/contatos/update.localidades_array'),
             'localidades.*.string' => __('requests/contatos/update.localidades_string'),
             'ufs'                  => __('requests/contatos/update.ufs_array'),
-            'ufs.*.string'         => __('requests/contatos/update.ufs_string')
+            'ufs.*.string'         => __('requests/contatos/update.ufs_string'),
         ];
     }
 }
