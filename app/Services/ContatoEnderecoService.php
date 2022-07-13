@@ -6,23 +6,21 @@ use Throwable;
 use App\Services\BaseService;
 use App\Models\ContatoEndereco;
 use App\Services\Responses\ServiceResponse;
-use App\Services\Contracts\EnderecosServiceInterface;
+use App\Services\Contracts\ContatoEnderecoServiceInterface;
 use App\Services\Params\Endereco\StoreEnderecoServiceParams;
 
-class EnderecosService extends BaseService implements EnderecosServiceInterface
+class ContatoEnderecoService extends BaseService implements ContatoEnderecoServiceInterface
 {
     /**
      * Atualiza os enderecos do contato
      *
-     * @param int   $contato_id
+     * @param integer $contato_id
      * @param array $enderecos
-     *
      * @return ServiceResponse
      */
-    public function storeMultipleEnderecos(int $contato_id, array $enderecos): ServiceResponse
+    public function storeMultiple(int $contato_id, array $enderecos): ServiceResponse
     {
         try {
-
             ContatoEndereco::where('contato_id', $contato_id)->delete();
 
             foreach ($enderecos as $endereco) {
@@ -37,62 +35,52 @@ class EnderecosService extends BaseService implements EnderecosServiceInterface
                     $endereco->numero
                 );
 
-                $storeEnderecoResponse = $this->storeEndereco($enderecoParams);
+                $storeEnderecoResponse = $this->store($enderecoParams);
 
                 if (!$storeEnderecoResponse->success) {
                     return $storeEnderecoResponse;
                 }
             }
-
-
         } catch (Throwable $e) {
-            throw $e;
+            return $this->defaultErrorReturn($e, compact('contato_id', 'enderecos'));
         }
 
         return new ServiceResponse(
             true,
             __('services/enderecos.update_enderecos_successfully'),
-            [
-                $contato_id,
-                $enderecos
-            ]
+            compact('contato_id', 'enderecos')
         );
     }
 
     /**
      * Salva o endereco de um contato
      *
-     * @param int    $contato_id
-     * @param string $endereco
-     *
+     * @param StoreEnderecoServiceParams $params
      * @return ServiceResponse
      */
-    public function storeEndereco(StoreEnderecoServiceParams $attributes): ServiceResponse
+    public function store(StoreEnderecoServiceParams $params): ServiceResponse
     {
         try {
             $endereco = ContatoEndereco::create(
                 [
-                    'contato_id' => $attributes->contato_id,
-                    'titulo'     => $attributes->titulo,
-                    'cep'        => $attributes->cep,
-                    'logradouro' => $attributes->logradouro,
-                    'bairro'     => $attributes->bairro,
-                    'localidade' => $attributes->localidade,
-                    'uf'         => $attributes->uf,
-                    'numero'     => $attributes->numero
+                    'contato_id' => $params->contato_id,
+                    'titulo'     => $params->titulo,
+                    'cep'        => $params->cep,
+                    'logradouro' => $params->logradouro,
+                    'bairro'     => $params->bairro,
+                    'localidade' => $params->localidade,
+                    'uf'         => $params->uf,
+                    'numero'     => $params->numero
                 ]
             );
-
         } catch (Throwable $e) {
-            return $this->defaultErrorReturn($e, compact('attributes'));
+            return $this->defaultErrorReturn($e, compact('params'));
         }
 
         return new ServiceResponse(
             true,
             __('services/endereco.update_endereco_successfully'),
-            [
-                $attributes
-            ]
+            $endereco
         );
     }
 }

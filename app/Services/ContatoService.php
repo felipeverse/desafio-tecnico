@@ -5,27 +5,22 @@ namespace App\Services;
 use Exception;
 use Throwable;
 use App\Models\Contato;
-use CreateContatosTable;
 use App\Jobs\ContatoEmailJob;
-use CreateContatoTelefonesTable;
 use App\Services\Responses\ServiceResponse;
-use App\Services\Contracts\ContatosServiceInterface;
-use App\Services\Contracts\EnderecosServiceInterface;
-use App\Services\Contracts\TelefonesServiceInterface;
+use App\Services\Contracts\ContatoServiceInterface;
+use App\Services\Contracts\ContatoEnderecoServiceInterface;
+use App\Services\Contracts\ContatoTelefoneServiceInterface;
 use App\Services\Params\Contato\CreateContatoServiceParams;
 use App\Services\Params\Contato\UpdateContatoServiceParams;
 use App\Services\Params\Contato\CreateCompleteContatoServiceParams;
 use App\Services\Params\Contato\UpdateCompleteContatoServiceParams;
 
-class ContatosService extends BaseService implements ContatosServiceInterface
+class ContatoService extends BaseService implements ContatoServiceInterface
 {
-
-
     /**
-     * Retorna todos os contatos
+     * Lista contatos com base no nome
      *
-     * @param string $searchName
-     *
+     * @param string|null $searchName
      * @return ServiceResponse
      */
     public function all(string $searchName = null): ServiceResponse
@@ -50,17 +45,16 @@ class ContatosService extends BaseService implements ContatosServiceInterface
     /**
      * Retorna o contato com base no id
      *
-     * @param  $id
-     *
+     * @param integer $id
      * @return ServiceResponse
      */
     public function find(int $id): ServiceResponse
     {
         try {
-            $contact = new Contato();
-            $contact = $contact->find($id);
+            $contato = new Contato();
+            $contato = $contato->find($id);
 
-            if (is_null($contact)) {
+            if (is_null($contato)) {
                 return new ServiceResponse(
                     false,
                     __('services/contatos.contato_not_foud')
@@ -73,19 +67,18 @@ class ContatosService extends BaseService implements ContatosServiceInterface
         return new ServiceResponse(
             true,
             __('services/contatos.contato_foud_successfully'),
-            $contact
+            $contato
         );
     }
 
     /**
      * Atualiza um contato
      *
-     * @param UpdateContatoServiceParams $attributes
-     * @param int   $id
-     *
+     * @param UpdateContatoServiceParams $params
+     * @param integer $id
      * @return ServiceResponse
      */
-    public function updateContato(UpdateContatoServiceParams $attributes, int $id): ServiceResponse
+    public function update(UpdateContatoServiceParams $params, int $id): ServiceResponse
     {
         try {
             $contatoResponse = $this->find($id);
@@ -100,10 +93,9 @@ class ContatosService extends BaseService implements ContatosServiceInterface
 
             $contato = $contatoResponse->data;
 
-            $contato->nome  = $attributes->nome;
-            $contato->email = $attributes->email;
+            $contato->nome = $params->nome;
+            $contato->email = $params->email;
             $contato->save();
-
         } catch (Throwable $e) {
             return $this->defaultErrorReturn($e);
         }
@@ -118,42 +110,41 @@ class ContatosService extends BaseService implements ContatosServiceInterface
     /**
      * Atualiza um contato, seus telefones e seus endereços
      *
-     * @param UpdateCompleteContatoServiceParams $attributes
-     * @param int   $id
-     *
+     * @param UpdateCompleteContatoServiceParams $params
+     * @param integer $id
      * @return ServiceResponse
      */
-    public function updateCompleteContato(UpdateCompleteContatoServiceParams $attributes, int $id): ServiceResponse
+    public function updateComplete(UpdateCompleteContatoServiceParams $params, int $id): ServiceResponse
     {
         try {
             $contatoParams = new UpdateContatoServiceParams(
-                $attributes->nome,
-                $attributes->email
+                $params->nome,
+                $params->email
             );
 
-            $updateContactResponse = $this->updateContato(
+            $updateContatoResponse = $this->update(
                 $contatoParams,
                 $id
             );
 
-            if (!$updateContactResponse->success) {
-                return $updateContactResponse;
+            if (!$updateContatoResponse->success) {
+                return $updateContatoResponse;
             }
 
-            $contato = $updateContactResponse->data;
+            $contato = $updateContatoResponse->data;
 
-            $updateTelefonesResponse = app(TelefonesServiceInterface::class)->storeMultipleTelefones($id, $attributes->telefones);
-            if (!$updateTelefonesResponse->success) {
-                return $updateTelefonesResponse;
+            $updateContatoTelefonesResponse = app(ContatoTelefoneServiceInterface::class)->storeMultiple($id, $params->telefones);
+            if (!$updateContatoTelefonesResponse->success) {
+                return $updateContatoTelefonesResponse;
             }
 
-            $updateEnderecosResponse = app(EnderecosServiceInterface::class)->storeMultipleEnderecos($id, $attributes->enderecos);
-            if (!$updateEnderecosResponse->success) {
-                return $updateEnderecosResponse;
-            }
 
+            $updateContatoEnderecosResponse = app(ContatoEnderecoServiceInterface::class)->storeMultiple($id, $params->enderecos);
+            if (!$updateContatoEnderecosResponse->success) {
+                return $updateContatoEnderecosResponse;
+            }
         } catch (Throwable $e) {
-            return $this->defaultErrorReturn($e, compact('attributes'));
+            return $this->defaultErrorReturn($e, compact('params'));
         }
 
         return new ServiceResponse(
@@ -166,16 +157,15 @@ class ContatosService extends BaseService implements ContatosServiceInterface
     /**
      * Criar novo contato
      *
-     * @param CreateContatoServiceParams $attributes
-     *
-     * @return ServiceReponse
+     * @param CreateContatoServiceParams $params
+     * @return ServiceResponse
      */
-    public function create(CreateContatoServiceParams $attributes): ServiceResponse
+    public function create(CreateContatoServiceParams $params): ServiceResponse
     {
         try {
             $contato = new Contato();
-            $contato->nome = $attributes->nome;
-            $contato->email = $attributes->email;
+            $contato->nome = $params->nome;
+            $contato->email = $params->email;
 
             $contato->save();
         } catch (Throwable $e) {
@@ -192,16 +182,15 @@ class ContatosService extends BaseService implements ContatosServiceInterface
     /**
      * Cria um contato, seus telefones e seus endereços
      *
-     * @param CreateCompleteContatoServiceParams
-     *
+     * @param CreateCompleteContatoServiceParams $params
      * @return ServiceResponse
      */
-    public function createCompleteContato(CreateCompleteContatoServiceParams $attributes): ServiceResponse
+    public function createComplete(CreateCompleteContatoServiceParams $params): ServiceResponse
     {
         try {
             $contatoParams = new CreateContatoServiceParams(
-                $attributes->nome,
-                $attributes->email
+                $params->nome,
+                $params->email
             );
 
             $createContatoResponse = $this->create($contatoParams);
@@ -212,28 +201,58 @@ class ContatosService extends BaseService implements ContatosServiceInterface
 
             $contato = $createContatoResponse->data;
 
-            $createTelefonesResponse = app(TelefonesServiceInterface::class)->storeMultipleTelefones($contato->id, $attributes->telefones);
+            $createTelefonesResponse = app(ContatoTelefoneServiceInterface::class)->storeMultiple($contato->id, $params->telefones);
             if (!$createTelefonesResponse->success) {
                 return $createTelefonesResponse;
             }
 
-            $createEnderecosResponse = app(EnderecosServiceInterface::class)->storeMultipleEnderecos($contato->id, $attributes->enderecos);
+            $createEnderecosResponse = app(ContatoEnderecoServiceInterface::class)->storeMultiple($contato->id, $params->enderecos);
             if (!$createEnderecosResponse->success) {
                 return $createEnderecosResponse;
             }
 
             $details['contato'] = $contato->refresh();
-            $details['email']   = 'felipealvesrrodrigues@outlook.com';
+            $details['email'] = 'felipealvesrrodrigues@outlook.com';
             dispatch(new ContatoEmailJob($details));
-
         } catch (Throwable $e) {
-            return $this->defaultErrorReturn($e, compact('attributes'));
+            return $this->defaultErrorReturn($e, compact('params'));
         }
 
         return new ServiceResponse(
             true,
             __('services/contatos.contato_create_successfully'),
             $contato->refresh()
+        );
+    }
+
+    /**
+     * Deleta um contato, seus telefones e endereços
+     *
+     * @param integer $id
+     * @return ServiceResponse
+     */
+    public function delete(int $id): ServiceResponse
+    {
+        try {
+            $contatoResponse = $this->find($id);
+
+            if (!$contatoResponse->success) {
+                return $contatoResponse;
+            }
+
+            if (is_null($contatoResponse)) {
+                throw new Exception(__('services/contatos.contato_not_foud'));
+            }
+
+            $contato = $contatoResponse->data;
+            $contato->delete();
+        } catch (Throwable $e) {
+            return $this->defaultErrorReturn($e);
+        }
+
+        return new ServiceResponse(
+            true,
+            __('services/contatos.deleted_contato_successfully')
         );
     }
 }

@@ -8,18 +8,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contato extends Model
 {
-    use HasFactory;
     use Sortable;
+    use HasFactory;
 
     protected $fillable = ['nome', 'email'];
 
     public $sortable = ['id', 'nome'];
 
-    public function telefones() {
+    public function telefones()
+    {
         return $this->hasMany(ContatoTelefone::class);
     }
 
-    public function enderecos() {
+    public function enderecos()
+    {
         return $this->hasMany(ContatoEndereco::class);
     }
 }

@@ -2,26 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class BuscaCEPController extends Controller
 {
-    public function fetch($cep)
+    /**
+     * Retorna dados do endereço com base no cep
+     *
+     * @param string $cep
+     * @return array $dadosEndereco
+     */
+    public function fetch(string $cep)
     {
         $baseURL = 'https://viacep.com.br/ws/';
 
-        $requestURL = $baseURL . $cep . '/json/'; 
+        $requestURL = $baseURL . $cep . '/json/';
 
         $response = Http::get($requestURL);
 
-        if ($response->status() != 200)
+        if ($response->status() != 200) {
             return null;
+        }
 
         $dadosEndereco = json_decode($response->body());
 
-        if (isset($dadosEndereco->erro))
+        if (isset($dadosEndereco->erro)) {
             return null;
+        }
 
         return $dadosEndereco;
     }

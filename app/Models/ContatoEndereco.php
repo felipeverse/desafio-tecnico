@@ -9,7 +9,8 @@ class ContatoEndereco extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $fillable =
+    [
         'contato_id',
         'titulo',
         'cep',
@@ -20,7 +21,8 @@ class ContatoEndereco extends Model
         'numero'
     ];
 
-    public function contato()  {
+    public function contato()
+    {
         return $this->belongsTo(Contato::class);
     }
 }

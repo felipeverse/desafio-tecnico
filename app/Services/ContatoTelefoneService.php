@@ -2,54 +2,52 @@
 
 namespace App\Services;
 
-use App\Models\ContatoTelefone;
 use Throwable;
 use App\Services\BaseService;
+use App\Models\ContatoTelefone;
 use App\Services\Responses\ServiceResponse;
-use App\Services\Contracts\TelefonesServiceInterface;
+use App\Services\Contracts\ContatoTelefoneServiceInterface;
 
-class TelefonesService extends BaseService implements TelefonesServiceInterface
+class ContatoTelefoneService extends BaseService implements ContatoTelefoneServiceInterface
 {
     /**
      * Atualiza os telefones do contato
      *
-     * @param int   $contato_id
+     * @param integer $contato_id
      * @param array $telefones
-     *
      * @return ServiceResponse
      */
-    public function storeMultipleTelefones(int $contato_id, array $telefones): ServiceResponse
+    public function storeMultiple(int $contato_id, array $telefones): ServiceResponse
     {
         try {
             ContatoTelefone::where('contato_id', $contato_id)->delete();
 
             foreach ($telefones as $telefone) {
-                $this->storeTelefone($contato_id, $telefone);
-            }
+                $storeTelefoneResponse = $this->store($contato_id, $telefone);
 
+                if (!$storeTelefoneResponse->success) {
+                    return $storeTelefoneResponse;
+                }
+            }
         } catch (Throwable $e) {
-            return $this->defaultErrorReturn($e, compact('attributes'));
+            return $this->defaultErrorReturn($e, compact('contato_id', 'telefones'));
         }
 
         return new ServiceResponse(
             true,
             __('services/telefones.update_telefones_successfully'),
-            [
-                $contato_id,
-                $telefones
-            ]
+            compact('contato_id', 'telefones')
         );
     }
 
     /**
      * Salva o telefone de um contato
      *
-     * @param int    $contato_id
+     * @param integer $contato_id
      * @param string $telefone
-     *
      * @return ServiceResponse
      */
-    public function storeTelefone(int $contato_id, string $telefone): ServiceResponse
+    public function store(int $contato_id, string $telefone): ServiceResponse
     {
         try {
             ContatoTelefone::create(
@@ -65,11 +63,7 @@ class TelefonesService extends BaseService implements TelefonesServiceInterface
         return new ServiceResponse(
             true,
             __('services/telefones.update_telefones_successfully'),
-            [
-                $contato_id,
-                $telefone
-            ]
+            compact('contato_id', 'telefone')
         );
     }
-
 }

@@ -14,8 +14,8 @@ class UpdateCompleteContatoServiceParams extends BaseServiceParams
     public function __construct(
         string $nome,
         string $email,
-        array  $telefones,
-        array  $enderecos
+        array $telefones,
+        array $enderecos
     ) {
         parent::__construct();
     }

@@ -47,10 +47,10 @@ class ServiceResponse implements JsonSerializable
         string $idLog = null,
         array $internalErrors = []
     ) {
-        $this->success        = $success;
-        $this->message        = $message;
-        $this->data           = $data;
-        $this->idLog          = $idLog;
+        $this->success = $success;
+        $this->message = $message;
+        $this->data = $data;
+        $this->idLog = $idLog;
         $this->internalErrors = $internalErrors;
 
         if (count($internalErrors) && !$internalErrors[0] instanceof InternalError) {
@@ -70,9 +70,12 @@ class ServiceResponse implements JsonSerializable
             'message'        => $this->message,
             'data'           => $this->data,
             'idLog'          => $this->idLog,
-            'internalErrors' => array_map(function ($internalError) {
-                return $internalError->toArray();
-            }, $this->internalErrors),
+            'internalErrors' => array_map(
+                function ($internalError) {
+                    return $internalError->toArray();
+                },
+                $this->internalErrors
+            ),
         ];
     }
 

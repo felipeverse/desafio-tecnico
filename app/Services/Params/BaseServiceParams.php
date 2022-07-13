@@ -27,7 +27,8 @@ class BaseServiceParams
                 ? $args[$parameter->getPosition()]
                 : ( $parameter->isDefaultValueAvailable()
                     ? $parameter->getDefaultValue()
-                    : null );
+                    : null
+                );
         }
     }
 

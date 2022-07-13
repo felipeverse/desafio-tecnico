@@ -35,7 +35,7 @@ class StoreRequest extends FormRequest
                 'localidades'   => 'cast:array',
                 'localidades.*' => 'cast:string',
                 'ufs'           => 'cast:array',
-                'ufs.*'         => 'cast:string'
+                'ufs.*'         => 'cast:string',
             ]
         ];
     }
@@ -65,7 +65,7 @@ class StoreRequest extends FormRequest
             'localidades'   => 'required:array',
             'localidades.*' => 'required|string',
             'ufs'           => 'required:array',
-            'ufs.*'         => 'required|string'
+            'ufs.*'         => 'required|string',
         ];
     }
 
@@ -96,7 +96,7 @@ class StoreRequest extends FormRequest
             'localidades'          => __('requests/contatos/store.localidades_array'),
             'localidades.*.string' => __('requests/contatos/store.localidades_string'),
             'ufs'                  => __('requests/contatos/store.ufs_array'),
-            'ufs.*.string'         => __('requests/contatos/stor.ufs_string')
+            'ufs.*.string'         => __('requests/contatos/stor.ufs_string'),
         ];
     }
 }

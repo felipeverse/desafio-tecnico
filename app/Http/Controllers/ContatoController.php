@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contato;
 use Illuminate\View\View;
 use App\Traits\ResponseHelpers;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Contatos\IndexRequest;
 use App\Http\Requests\Contatos\StoreRequest;
 use App\Http\Requests\Contatos\UpdateRequest;
-use App\Services\Contracts\ContatosServiceInterface;
+use App\Services\Contracts\ContatoServiceInterface;
 use App\Services\Params\Contato\CreateCompleteContatoServiceParams;
 use App\Services\Params\Contato\UpdateCompleteContatoServiceParams;
 
@@ -18,11 +17,11 @@ class ContatoController extends Controller
     use ResponseHelpers;
 
     /**
-     * @var ContatosServiceInterface
+     * @var ContatoServiceInterface
      */
     protected $contatosService;
 
-    public function __construct(ContatosServiceInterface $contatosService)
+    public function __construct(ContatoServiceInterface $contatosService)
     {
         $this->contatosService = $contatosService;
     }
@@ -31,17 +30,16 @@ class ContatoController extends Controller
      * Método para listar contatos
      *
      * @param IndexRequest $request
-     *
-     * @return View
+     * @return View|RedirectReponse
      */
-    public function index(IndexRequest $request): View
+    public function index(IndexRequest $request)
     {
         $searchName = $request->query('search_name');
 
-        $contatosResponse = app(ContatosServiceInterface::class)->all($searchName);
+        $contatosResponse = app(ContatoServiceInterface::class)->all($searchName);
 
         if (!$contatosResponse->success) {
-            return redirect(url()->previous())->with('danger', $contatoResponse->message);
+            return redirect(url()->previous())->with('danger', $contatosResponse->message);
         }
 
         $contatos = $contatosResponse->data;
@@ -54,7 +52,7 @@ class ContatoController extends Controller
      *
      * @return View
      */
-    public function create()
+    public function create(): View
     {
         return view('contatos.create');
     }
@@ -63,7 +61,6 @@ class ContatoController extends Controller
      * Armazena um contato
      *
      * @param StoreRequest $request
-     *
      * @return RedirectResponse
      */
     public function store(StoreRequest $request): RedirectResponse
@@ -89,7 +86,7 @@ class ContatoController extends Controller
             $enderecos
         );
 
-        $createResponse = app(ContatosServiceInterface::class)->createCompleteContato($params);
+        $createResponse = app(ContatoServiceInterface::class)->createComplete($params);
 
         if (!$createResponse->success) {
             return redirect(url()->previous())->with('danger', $createResponse->message);
@@ -101,16 +98,15 @@ class ContatoController extends Controller
     /**
      * Mostra um contato
      *
-     * @param Contato $contato
-     *
-     * @return View
+     * @param integer $id
+     * @return View|RedirectResponse
      */
-    public function show($id)
+    public function show(int $id)
     {
-        $contatoResponse = app(ContatosServiceInterface::class)->find($id);
+        $contatoResponse = app(ContatoServiceInterface::class)->find($id);
 
         if (!$contatoResponse->success) {
-            return redirect(url()->previous())->with('danger', $contatoResponse->message);
+            return redirect('/contatos')->with('danger', $contatoResponse->message);
         }
 
         $contato = $contatoResponse->data;
@@ -120,16 +116,15 @@ class ContatoController extends Controller
     /**
      * Recupera e mostra contato para edição
      *
-     * @param int $id
-     *
-     * @return View
+     * @param integer $id
+     * @return View|RedirectResponse
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        $contatoResponse = app(ContatosServiceInterface::class)->find($id);
+        $contatoResponse = app(ContatoServiceInterface::class)->find($id);
 
         if (!$contatoResponse->success) {
-            return redirect(url()->previous())->with('danger', $contatoResponse->message);
+            return redirect('/contatos')->with('danger', $contatoResponse->message);
         }
 
         $contato = $contatoResponse->data;
@@ -139,12 +134,11 @@ class ContatoController extends Controller
     /**
      * Atualiza um contato
      *
-     * @param  int $id
-     * @param  StoreRequest $request
-     *
+     * @param integer $id
+     * @param UpdateRequest $request
      * @return RedirectResponse
      */
-    public function update($id, UpdateRequest $request): RedirectResponse
+    public function update(int $id, UpdateRequest $request): RedirectResponse
     {
         // Obtém array com enderecos do request
         $enderecos = [];
@@ -167,7 +161,7 @@ class ContatoController extends Controller
             $enderecos
         );
 
-        $updateResponse = app(ContatosServiceInterface::class)->updateCompleteContato($params, $id);
+        $updateResponse = app(ContatoServiceInterface::class)->updateComplete($params, $id);
 
         if (!$updateResponse->success) {
             return redirect(url()->previous())->with('danger', $updateResponse->message);
@@ -176,9 +170,20 @@ class ContatoController extends Controller
         return redirect('/contatos')->with('success', 'Contato atualizado com sucesso!');
     }
 
-    public function destroy(Contato $contato)
+    /**
+     * Deleta um contato
+     *
+     * @param integer $id
+     * @return RedirectResponse
+     */
+    public function destroy(int $id): RedirectResponse
     {
-        $contato->delete();
+        $deleteResponse = app(ContatoServiceInterface::class)->delete($id);
+
+        if (!$deleteResponse->success) {
+            return redirect('/contatos')->with('danger', $deleteResponse->message);
+        }
+
         return redirect('/contatos')->with('success', 'Contato deletado com sucesso!');
     }
 }

@@ -8,7 +8,7 @@ class InternalError
      * Url base para formaçõa do atributo "moreInfo"
      * @const string
      */
-    const BASE_URL_MORE_INFO = 'https://developers.vexpenses.com/moreinfo/';
+    public const BASE_URL_MORE_INFO = 'https://developers.vexpenses.com/moreinfo/';
 
     /**
      * Código interno do erro

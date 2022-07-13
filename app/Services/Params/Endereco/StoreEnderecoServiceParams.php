@@ -16,7 +16,7 @@ class StoreEnderecoServiceParams extends BaseServiceParams
     public $numero;
 
     public function __construct(
-        int    $contato_id,
+        int $contato_id,
         string $titulo,
         string $cep,
         string $logradouro,
