@@ -4,12 +4,19 @@ namespace App\Services;
 
 use Throwable;
 use App\Services\BaseService;
-use App\Models\ContatoTelefone;
 use App\Services\Responses\ServiceResponse;
+use App\Repositories\Contracts\ContatoTelefoneRepository;
 use App\Services\Contracts\ContatoTelefoneServiceInterface;
 
 class ContatoTelefoneService extends BaseService implements ContatoTelefoneServiceInterface
 {
+    protected $contatoTelefoneRepository;
+
+    public function __construct(ContatoTelefoneRepository $contatoTelefoneRepository)
+    {
+        $this->contatoTelefoneRepository = $contatoTelefoneRepository;
+    }
+
     /**
      * Atualiza os telefones do contato
      *
@@ -20,7 +27,7 @@ class ContatoTelefoneService extends BaseService implements ContatoTelefoneServi
     public function storeMultiple(int $contato_id, array $telefones): ServiceResponse
     {
         try {
-            ContatoTelefone::where('contato_id', $contato_id)->delete();
+            $this->contatoTelefoneRepository->deleteAllByContactId($contato_id);
 
             foreach ($telefones as $telefone) {
                 $storeTelefoneResponse = $this->store($contato_id, $telefone);
@@ -50,10 +57,10 @@ class ContatoTelefoneService extends BaseService implements ContatoTelefoneServi
     public function store(int $contato_id, string $telefone): ServiceResponse
     {
         try {
-            ContatoTelefone::create(
+            $this->contatoTelefoneRepository->create(
                 [
-                    'contato_id' => $contato_id,
-                    'numero'     => $telefone
+                    "contato_id" => $contato_id,
+                    "numero"   => $telefone,
                 ]
             );
         } catch (Throwable $e) {

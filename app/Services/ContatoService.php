@@ -4,9 +4,10 @@ namespace App\Services;
 
 use Exception;
 use Throwable;
-use App\Models\Contato;
 use App\Jobs\ContatoEmailJob;
+use App\Services\BaseService;
 use App\Services\Responses\ServiceResponse;
+use App\Repositories\Contracts\ContatoRepository;
 use App\Services\Contracts\ContatoServiceInterface;
 use App\Services\Contracts\ContatoEnderecoServiceInterface;
 use App\Services\Contracts\ContatoTelefoneServiceInterface;
@@ -17,6 +18,13 @@ use App\Services\Params\Contato\UpdateCompleteContatoServiceParams;
 
 class ContatoService extends BaseService implements ContatoServiceInterface
 {
+    protected $contatoRepository;
+
+    public function __construct(ContatoRepository $contatoRepository)
+    {
+        $this->contatoRepository = $contatoRepository;
+    }
+
     /**
      * Lista contatos com base no nome
      *
@@ -26,11 +34,7 @@ class ContatoService extends BaseService implements ContatoServiceInterface
     public function all(string $searchName = null): ServiceResponse
     {
         try {
-            $query = Contato::sortable();
-            if (!is_null($searchName)) {
-                $query->where('contatos.nome', 'like', "%$searchName%");
-            }
-            $contatos = $query->paginate(5);
+            $contatos = $this->contatoRepository->findByName($searchName);
         } catch (Throwable $e) {
             return $this->defaultErrorReturn($e, compact('searchName'));
         }
@@ -51,8 +55,7 @@ class ContatoService extends BaseService implements ContatoServiceInterface
     public function find(int $id): ServiceResponse
     {
         try {
-            $contato = new Contato();
-            $contato = $contato->find($id);
+            $contato = $this->contatoRepository->find($id);
 
             if (is_null($contato)) {
                 return new ServiceResponse(
@@ -91,11 +94,7 @@ class ContatoService extends BaseService implements ContatoServiceInterface
                 throw new Exception(__('services/contatos.contato_not_foud'));
             }
 
-            $contato = $contatoResponse->data;
-
-            $contato->nome = $params->nome;
-            $contato->email = $params->email;
-            $contato->save();
+            $contato = $this->contatoRepository->update($params->toArray(), $id);
         } catch (Throwable $e) {
             return $this->defaultErrorReturn($e);
         }
@@ -133,13 +132,14 @@ class ContatoService extends BaseService implements ContatoServiceInterface
 
             $contato = $updateContatoResponse->data;
 
-            $updateContatoTelefonesResponse = app(ContatoTelefoneServiceInterface::class)->storeMultiple($id, $params->telefones);
+            $updateContatoTelefonesResponse = app(ContatoTelefoneServiceInterface::class)
+                ->storeMultiple($id, $params->telefones);
             if (!$updateContatoTelefonesResponse->success) {
                 return $updateContatoTelefonesResponse;
             }
 
-
-            $updateContatoEnderecosResponse = app(ContatoEnderecoServiceInterface::class)->storeMultiple($id, $params->enderecos);
+            $updateContatoEnderecosResponse = app(ContatoEnderecoServiceInterface::class)
+                ->storeMultiple($id, $params->enderecos);
             if (!$updateContatoEnderecosResponse->success) {
                 return $updateContatoEnderecosResponse;
             }
@@ -163,11 +163,7 @@ class ContatoService extends BaseService implements ContatoServiceInterface
     public function create(CreateContatoServiceParams $params): ServiceResponse
     {
         try {
-            $contato = new Contato();
-            $contato->nome = $params->nome;
-            $contato->email = $params->email;
-
-            $contato->save();
+            $contato = $this->contatoRepository->create($params->toArray());
         } catch (Throwable $e) {
             return $this->defaultErrorReturn($e);
         }
@@ -244,8 +240,7 @@ class ContatoService extends BaseService implements ContatoServiceInterface
                 throw new Exception(__('services/contatos.contato_not_foud'));
             }
 
-            $contato = $contatoResponse->data;
-            $contato->delete();
+            $this->contatoRepository->delete($id);
         } catch (Throwable $e) {
             return $this->defaultErrorReturn($e);
         }
