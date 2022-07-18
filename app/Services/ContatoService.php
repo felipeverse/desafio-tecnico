@@ -18,6 +18,9 @@ use App\Services\Params\Contato\UpdateCompleteContatoServiceParams;
 
 class ContatoService extends BaseService implements ContatoServiceInterface
 {
+    /**
+     * @var ContatoRepository
+     */
     protected $contatoRepository;
 
     public function __construct(ContatoRepository $contatoRepository)
@@ -197,12 +200,14 @@ class ContatoService extends BaseService implements ContatoServiceInterface
 
             $contato = $createContatoResponse->data;
 
-            $createTelefonesResponse = app(ContatoTelefoneServiceInterface::class)->storeMultiple($contato->id, $params->telefones);
+            $createTelefonesResponse = app(ContatoTelefoneServiceInterface::class)
+                ->storeMultiple($contato->id, $params->telefones);
             if (!$createTelefonesResponse->success) {
                 return $createTelefonesResponse;
             }
 
-            $createEnderecosResponse = app(ContatoEnderecoServiceInterface::class)->storeMultiple($contato->id, $params->enderecos);
+            $createEnderecosResponse = app(ContatoEnderecoServiceInterface::class)
+                ->storeMultiple($contato->id, $params->enderecos);
             if (!$createEnderecosResponse->success) {
                 return $createEnderecosResponse;
             }
