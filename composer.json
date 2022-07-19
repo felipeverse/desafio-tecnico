@@ -13,12 +13,17 @@
         "laravel/sanctum": "2.11",
         "laravel/tinker": "2.5",
         "laravel/ui": "3.4",
-        "waavi/sanitizer": "2.0.0"
+        "waavi/sanitizer": "2.0.0",
+        "vexpenses/l5-repository": "dev-master"
     },
     "repositories": [
         {
           "type": "vcs",
           "url": "https://github.com/vexpenses/Sanitizer"
+        },
+        {
+            "type": "vcs",
+            "url": "git@bitbucket.org:indb/l5-repository.git"
         }
     ],
     "require-dev": {

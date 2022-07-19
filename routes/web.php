@@ -14,5 +14,6 @@ Auth::routes();
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\ContatoController::class, 'index'])->name('home');
+    Route::get('/', [App\Http\Controllers\ContatoController::class, 'index'])->name('/');
     Route::resource('contatos', ContatoController::class);
 });

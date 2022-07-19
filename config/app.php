@@ -177,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\CustomFilterServiceProvider::class,
         App\Providers\ServiceServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
     ],
 
     /*

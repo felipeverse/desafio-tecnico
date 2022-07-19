@@ -4,13 +4,24 @@ namespace App\Services;
 
 use Throwable;
 use App\Services\BaseService;
-use App\Models\ContatoEndereco;
+use Illuminate\Support\Facades\DB;
 use App\Services\Responses\ServiceResponse;
+use App\Repositories\Contracts\ContatoEnderecoRepository;
 use App\Services\Contracts\ContatoEnderecoServiceInterface;
 use App\Services\Params\Endereco\StoreEnderecoServiceParams;
 
 class ContatoEnderecoService extends BaseService implements ContatoEnderecoServiceInterface
 {
+    /**
+     * @var ContatoEnderecoRepository
+     */
+    protected $contatoEnderecoRepository;
+
+    public function __construct(ContatoEnderecoRepository $contatoEnderecoRepository)
+    {
+        $this->contatoEnderecoRepository = $contatoEnderecoRepository;
+    }
+
     /**
      * Atualiza os enderecos do contato
      *
@@ -20,8 +31,9 @@ class ContatoEnderecoService extends BaseService implements ContatoEnderecoServi
      */
     public function storeMultiple(int $contato_id, array $enderecos): ServiceResponse
     {
+        DB::beginTransaction();
         try {
-            ContatoEndereco::where('contato_id', $contato_id)->delete();
+            $this->contatoEnderecoRepository->deleteAllByContactId($contato_id);
 
             foreach ($enderecos as $endereco) {
                 $enderecoParams = new StoreEnderecoServiceParams(
@@ -38,13 +50,16 @@ class ContatoEnderecoService extends BaseService implements ContatoEnderecoServi
                 $storeEnderecoResponse = $this->store($enderecoParams);
 
                 if (!$storeEnderecoResponse->success) {
+                    DB::rollBack();
                     return $storeEnderecoResponse;
                 }
             }
         } catch (Throwable $e) {
+            DB::rollBack();
             return $this->defaultErrorReturn($e, compact('contato_id', 'enderecos'));
         }
 
+        DB::commit();
         return new ServiceResponse(
             true,
             __('services/enderecos.update_enderecos_successfully'),
@@ -61,18 +76,7 @@ class ContatoEnderecoService extends BaseService implements ContatoEnderecoServi
     public function store(StoreEnderecoServiceParams $params): ServiceResponse
     {
         try {
-            $endereco = ContatoEndereco::create(
-                [
-                    'contato_id' => $params->contato_id,
-                    'titulo'     => $params->titulo,
-                    'cep'        => $params->cep,
-                    'logradouro' => $params->logradouro,
-                    'bairro'     => $params->bairro,
-                    'localidade' => $params->localidade,
-                    'uf'         => $params->uf,
-                    'numero'     => $params->numero
-                ]
-            );
+            $endereco = $this->contatoEnderecoRepository->create($params->toArray());
         } catch (Throwable $e) {
             return $this->defaultErrorReturn($e, compact('params'));
         }
